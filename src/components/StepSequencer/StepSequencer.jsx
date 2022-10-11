@@ -2,16 +2,20 @@ import './StepSequencer.css';
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 
+import useBPM from "./useBPM"
 import StepTracker from "../StepTracker/StepTracker"
 import BD from "../../samples/BD.WAV";
 import SD from "../../samples/TOTAL_808_SAMPLE 9_S08.WAV"
 
 function StepSequencer() {
 
+    console.log('loaded Step Sequencer')
     //keep active for rendered components. 
     const [beatIndex, setBeatIndex] = useState(null);
+    const [bpm, BPMslider] = useBPM(80);
 
-    let bpm = 80;
+    let started = false;
+    let playing = false;
     let beat = 0;
     const sequenceArray = setSteps(8);
     Tone.Transport.bpm.value = bpm;   
@@ -73,14 +77,35 @@ function StepSequencer() {
         Tone.Transport.scheduleRepeat(repeat, "8n");
       };
 
-    const start = () => {
-        Tone.start();
-        Tone.Transport.start();
-        demoPlay();
-    }
-    const stop = () => {
-        Tone.Transport.stop();
-    }
+    // const start = () => {
+    //     Tone.start();
+    //     Tone.Transport.start();
+    //     demoPlay();
+    // }
+    // const stop = () => {
+    //     Tone.Transport.stop();
+    //     beat=0;
+    // }
+    const configPlayButton = (e) => {
+          if (!started) {
+            Tone.start();
+            Tone.getDestination().volume.rampTo(-10, 0.001)
+            demoPlay();
+            started = true;
+          }
+      
+          if (playing) {
+            e.target.innerText = "Play";
+            Tone.Transport.stop();
+            playing = false;
+          } else {
+            e.target.innerText = "Stop";
+            Tone.Transport.start();
+            playing = true;
+          }
+      };
+
+
 
     const stepToggle = (e,step) => {
         step.isActive = !step.isActive;
@@ -93,10 +118,9 @@ function StepSequencer() {
             <header>
                 <h1>rhythm sequencer spike</h1>
             </header>
-            <button><tone-button onClick={start}>Start</tone-button></button>
-            <button><tone-button onClick={stop}>Stop</tone-button></button>
-            {/* <input tcdype="range" min="1" max="240" width="100px" value={bpm} onChange={e=>setBPM(e.target.value)} className="slider" id="tempo"></input> */}
-            <p></p>
+            <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
+            {BPMslider}
+            <p>{bpm}</p>
             <section className="sequence_grid">
                 {grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
