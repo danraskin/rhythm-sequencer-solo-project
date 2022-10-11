@@ -1,0 +1,46 @@
+.App {
+    margin: 0;
+    text-align: center;
+}
+
+.sequence_grid {
+    
+    /* display: grid; */
+    /* grid-template-columns: [col1] 50px [col2] 50px 50px 50px 50px 50px 50px 50px;
+    grid-template-rows: [row1] 50px; */
+}
+
+.row {
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+}
+
+
+
+.step {
+    height: 50px;
+    width: 50px;
+    margin: 2px;
+
+}
+
+.step_track {
+    height: 10px;
+    width:50px;
+    margin: 2px;
+}
+
+.active-true {
+    background-color:blue;
+}
+.active-false {
+    background-color:grey;
+}
+
+.track_active-true {
+    background-color:rgb(222, 71, 71);
+}
+.track_active-false {
+    background-color:rgb(228, 163, 163);
+}
