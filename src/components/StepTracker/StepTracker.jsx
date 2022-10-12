@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function StepTracker({beatIndex,step}) {
+function StepTracker({step}) {
 
     const[stepTracker, setStepTracker]=useState(null);
 
