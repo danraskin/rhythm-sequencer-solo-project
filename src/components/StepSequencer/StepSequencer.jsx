@@ -7,26 +7,38 @@ import StepTracker from "../StepTracker/StepTracker"
 import BD from "../../samples/BD.WAV";
 import SD from "../../samples/TOTAL_808_SAMPLE 9_S08.WAV"
 
-function StepSequencer() {
+function StepSequencer({kitLibrary}) {
 
-    console.log('loaded Step Sequencer')
+    console.log('loaded Step Sequencer');
     //keep active for rendered components. 
     const [beatIndex, setBeatIndex] = useState(null);
-    const [bpm, BPMslider] = useBPM(80);
+    const [ bpm, BPMslider] = useBPM(80);
 
     let started = false;
     let playing = false;
     let beat = 0;
     const sequenceArray = setSteps(8);
-    Tone.Transport.bpm.value = bpm;   
+    Tone.Transport.bpm.value = bpm;  
+    const drumKit= [];
 
-    const bdBuffer1 = new Tone.ToneAudioBuffer(BD)
-    const bdBuffer2 = new Tone.ToneAudioBuffer(SD);
-    const drumKit = [
-        new Tone.Player(bdBuffer1),
-        new Tone.Player(bdBuffer2) 
-    ]
-     drumKit.forEach(drum => drum.toDestination());
+    const kitBuffers = new Tone.ToneAudioBuffers({
+        urls: {
+            BD,
+            SD
+        },
+        onload: ()=> {
+            console.log('in bdBuffer1 function');
+            const drum1 = new Tone.Player().toDestination();
+            drum1.buffer = kitBuffers.get("BD");
+            const drum2 = new Tone.Player().toDestination();
+            drum2.buffer = kitBuffers.get("SD");
+            drumKit.push(drum1,drum2);
+            console.log(drumKit);
+            return drumKit;
+        }
+    });
+
+    //  drumKit.forEach(drum => drum.toDestination());
 
     function setSteps(steps) {
         const stepsArray = [];
@@ -120,6 +132,7 @@ function StepSequencer() {
             </header>
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
             {BPMslider}
+
             <p>{bpm}</p>
             <section className="sequence_grid">
                 {grid.map( (row,i) => (
