@@ -16,15 +16,20 @@ function StepSequencer() {
     //need to make a FETCH kits request in a useEffect.
     //fetch kits sets a reducer, which is accessed in this parent component as a menu.
     //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
-    const sampleKits = useSelector(store=>store.sampleKits);
+    const samples = useSelector(store=>store.samples);
     const [ bpm, BPMslider ] = useBPM(80);
     const [ numSteps, setNumSteps ] = useState(8);
+    const [ selectedKit, setSelectedKit ] = useState({});
 
-    useEffect( ()=> {
-        dispatch({type: 'FETCH_SAMPLES'})
-    },[]);
+    useEffect( () => {
+        dispatch({type: 'FETCH_SAMPLES'});
+        console.log('selectedKit',selectedKit)
+    },[selectedKit]);
 
-
+    const selectKit = (e)=> {
+        console.log('target value is',e);
+        setSelectedKit(e);
+    }
     const kit1 = {
         BD: BD1,
         SD: SD1
@@ -79,10 +84,25 @@ function StepSequencer() {
             {BPMslider}
             <p>{bpm}</p>
             <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
+            {/* <form >
+                <label>Drum kits</label>
+                <select>
+                        {samples.map(kit=> (
+                            <option key={kit.id} onClick={e=>selectKit} value={kit}>{kit.name}</option>
+                        ))}
+                </select>
+            </form> */}
+            <div id="kit_selector">
+                {!samples? null : samples.map(kit=> (
+                    <button key={kit.id} onClick={e=>selectKit(kit)} value={kit}>{kit.name}</button>
+                ))}
+            </div>
+
+            
             <SequencerComponent
                 bpm = {bpm} 
                 BPMslider={BPMslider}
-                selectedKit={kit1}
+                selectedKit={selectedKit}
                 numSteps={numSteps}
                
             />

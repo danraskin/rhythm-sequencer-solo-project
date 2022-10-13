@@ -8,12 +8,12 @@ import StepTracker from "../StepTracker/StepTracker"
 
 
 
-function SequencerComponent({ bpm, BPMslider, selectedKit, numSteps}) {
+function SequencerComponent({ bpm, selectedKit, numSteps}) {
 
     console.log('loaded Step Sequencer');
-
-    const {BD, SD} = selectedKit;
-
+    
+    const {name, BD, SD} = selectedKit;
+    console.log(BD,SD);
     let started = false;
     let playing = false;
     let beat = 0;
@@ -28,7 +28,7 @@ function SequencerComponent({ bpm, BPMslider, selectedKit, numSteps}) {
     ]
      drumKit.forEach(drum => drum.toDestination());
 
-    console.log(drumKit);
+    console.log('drumKit', drumKit);
 
     // function setSteps(steps) {
     //     const stepsArray = [];

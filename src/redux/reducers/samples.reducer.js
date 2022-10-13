@@ -1,4 +1,4 @@
-const sampleKits = (state = [], action) => {
+const samples = (state = [], action) => {
     switch (action.type) {
       case 'SET_SAMPLES':
         return action.payload;
@@ -9,5 +9,5 @@ const sampleKits = (state = [], action) => {
   
   // user will be on the redux state at:
   // state.user
-  export default sampleKits;
+  export default samples;
   
