@@ -4,10 +4,7 @@ import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
 import SequencerComponent from './SequencerComponent';
-import BD1 from "../../samples/BD.WAV";
-import SD1 from "../../samples/TOTAL_808_SAMPLE 9_S08.WAV"
-import SD2 from "../../samples/TOTAL_808_SAMPLE 23_S22.WAV"
-import BD2 from "../../samples/TOTAL_808_SAMPLE 26_S25.WAV"
+
 
 function StepSequencer() {
 
@@ -19,25 +16,15 @@ function StepSequencer() {
     const samples = useSelector(store=>store.samples);
     const [ bpm, BPMslider ] = useBPM(80);
     const [ numSteps, setNumSteps ] = useState(8);
-    const [ selectedKit, setSelectedKit ] = useState({});
+    const [ selectedKit, setSelectedKit ] = useState(undefined);
 
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});
-        console.log('selectedKit',selectedKit)
-    },[selectedKit]);
+    },[]);
 
     const selectKit = (e)=> {
         console.log('target value is',e);
         setSelectedKit(e);
-    }
-    const kit1 = {
-        BD: BD1,
-        SD: SD1
-    }
-
-    const kit2 = {
-        BD: BD2,
-        SD: SD2
     }
 
 
@@ -98,7 +85,7 @@ function StepSequencer() {
                 ))}
             </div>
 
-            
+            {!selectedKit ? null :
             <SequencerComponent
                 bpm = {bpm} 
                 BPMslider={BPMslider}
@@ -106,6 +93,7 @@ function StepSequencer() {
                 numSteps={numSteps}
                
             />
+            }
         </div>
         
     )

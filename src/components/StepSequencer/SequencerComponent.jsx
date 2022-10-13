@@ -6,29 +6,62 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "../StepTracker/StepTracker"
 
-
-
 function SequencerComponent({ bpm, selectedKit, numSteps}) {
 
+    //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
+    // const bpmRef = useRef(80);
+    // bpmRef.current = 80;
+
     console.log('loaded Step Sequencer');
-    
-    const {name, BD, SD} = selectedKit;
-    console.log(BD,SD);
+
+        const BD = require(`../../samples/${selectedKit.BD}`);
+        const SD = require(`../../samples/${selectedKit.SD}`);
+        const HH = require(`../../samples/${selectedKit.HH}`);
+
     let started = false;
     let playing = false;
     let beat = 0;
+    // let grid;
     // const sequenceArray = setSteps(numSteps);
     Tone.Transport.bpm.value = bpm;
 
-    const bdBuffer1 = new Tone.ToneAudioBuffer(BD)
-    const bdBuffer2 = new Tone.ToneAudioBuffer(SD);
+    // const kitBuffers = new Tone.ToneAudioBuffers({
+    //     urls: {
+    //         kitBD: BD1,
+    //         kitSD: SD1,
+    //         kitHH: HH1,
+    //     },
+    //     // baseUrl: "../../samples/",
+    //     onload: ()=> {
+
+    //         const bdPlayer = new Tone.Player().toDestination;
+    //         bdPlayer.buffer = kitBuffers.get(kitBD);
+    //         const sdPlayer = new Tone.Player().toDestination;
+    //         sdPlayer.buffer = kitBuffers.get(kitSD);
+    //         const hhPlayer = new Tone.Player().toDestination;
+    //         hhPlayer.buffer = kitBuffers.get(kitHH)
+
+    //         const drumKit = [
+    //             new Tone.Player(bdBuffer),
+    //             new Tone.Player(sdBuffer),
+    //             new Tone.Player(hhBuffer) 
+    //         ]  
+
+    //         console.log('drumKit in kitBuffers', drumKit);
+    //         grid = makeGrid(drumKit)
+    //         console.log('grid in kitBuffers',grid);
+    //     }
+    // });
+    const bdBuffer = new Tone.ToneAudioBuffer(BD);
+    const sdBuffer = new Tone.ToneAudioBuffer(SD);
+    const hhBuffer = new Tone.ToneAudioBuffer(HH);
     const drumKit = [
-        new Tone.Player(bdBuffer1),
-        new Tone.Player(bdBuffer2) 
+        new Tone.Player(bdBuffer),
+        new Tone.Player(sdBuffer),
+        new Tone.Player(hhBuffer) 
     ]
      drumKit.forEach(drum => drum.toDestination());
 
-    console.log('drumKit', drumKit);
 
     // function setSteps(steps) {
     //     const stepsArray = [];
@@ -42,6 +75,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     // }
   
     const makeGrid = (drumKit) => {
+        console.log('grid in makeGrid',grid)
         const rows = [];   
         for (const sample of drumKit) {
             const row = [];
@@ -94,6 +128,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
           if (playing) {
             e.target.innerText = "Play";
             Tone.Transport.stop();
+            beat=0;
             playing = false;
           } else {
             e.target.innerText = "Stop";
@@ -112,7 +147,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
             <section className="sequence_grid">
-                {grid.map( (row,i) => (
+                {!grid ? null : grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
                         {row.map(step => (
                             <div
@@ -125,7 +160,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
                     </div>
                 ))}
                 <div className="row row_track">
-                {grid[0].map(step => (
+                {!grid ? null : grid[0].map(step => (
                     <StepTracker
                         key={step.step}
                         step={step}
