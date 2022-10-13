@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSelector,useDispatch } from 'react-redux'
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
@@ -10,8 +11,19 @@ import BD2 from "../../samples/TOTAL_808_SAMPLE 26_S25.WAV"
 
 function StepSequencer() {
 
+    const dispatch=useDispatch();
+
+    //need to make a FETCH kits request in a useEffect.
+    //fetch kits sets a reducer, which is accessed in this parent component as a menu.
+    //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
+    const sampleKits = useSelector(store=>store.sampleKits);
     const [ bpm, BPMslider ] = useBPM(80);
     const [ numSteps, setNumSteps ] = useState(8);
+
+    useEffect( ()=> {
+        dispatch({type: 'FETCH_SAMPLES'})
+    },[]);
+
 
     const kit1 = {
         BD: BD1,
