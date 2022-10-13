@@ -10,7 +10,8 @@ import BD2 from "../../samples/TOTAL_808_SAMPLE 26_S25.WAV"
 
 function StepSequencer() {
 
-    const [ bpm, BPMslider] = useBPM(80);
+    const [ bpm, BPMslider ] = useBPM(80);
+    const [ numSteps, setNumSteps ] = useState(8);
 
     const kit1 = {
         BD: BD1,
@@ -58,13 +59,19 @@ function StepSequencer() {
 // grid is the "array of arrays of objects" that both renders on DOM in SequencerComponent
 // and is called in the 'demoPlay()' to trigger samples.
 
-
     return(
-        <div>
+        <div className="App">
+            <header>
+                <h1>rhythm sequencer</h1>
+            </header>
+            {BPMslider}
+            <p>{bpm}</p>
+            <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
             <SequencerComponent
                 bpm = {bpm} 
                 BPMslider={BPMslider}
                 selectedKit={kit1}
+                numSteps={numSteps}
                
             />
         </div>

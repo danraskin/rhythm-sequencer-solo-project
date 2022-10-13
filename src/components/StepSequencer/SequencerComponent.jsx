@@ -8,7 +8,7 @@ import StepTracker from "../StepTracker/StepTracker"
 
 
 
-function SequencerComponent({ bpm, BPMslider, selectedKit }) {
+function SequencerComponent({ bpm, BPMslider, selectedKit, numSteps}) {
 
     console.log('loaded Step Sequencer');
 
@@ -17,7 +17,7 @@ function SequencerComponent({ bpm, BPMslider, selectedKit }) {
     let started = false;
     let playing = false;
     let beat = 0;
-    const sequenceArray = setSteps(8);
+    // const sequenceArray = setSteps(numSteps);
     Tone.Transport.bpm.value = bpm;
 
     const bdBuffer1 = new Tone.ToneAudioBuffer(BD)
@@ -28,23 +28,24 @@ function SequencerComponent({ bpm, BPMslider, selectedKit }) {
     ]
      drumKit.forEach(drum => drum.toDestination());
 
-console.log(drumKit);
-    function setSteps(steps) {
-        const stepsArray = [];
-        for (let i=1; i < steps +1 ;i++) {
-            stepsArray.push({
-                step: i,
-                isActive: false
-            });
-        }
-        return stepsArray;
-    }
+    console.log(drumKit);
+
+    // function setSteps(steps) {
+    //     const stepsArray = [];
+    //     for (let i=1; i < steps +1 ;i++) {
+    //         stepsArray.push({
+    //             step: i,
+    //             isActive: false
+    //         });
+    //     }
+    //     return stepsArray;
+    // }
   
     const makeGrid = (drumKit) => {
         const rows = [];   
         for (const sample of drumKit) {
             const row = [];
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < numSteps; i++) {
                 row.push({
                 step: i,
                 sample: sample,
@@ -68,7 +69,7 @@ console.log(drumKit);
                 drum.start();
               }
             });
-            beat = (beat + 1) % 8;
+            beat = (beat + 1) % numSteps;
 
             // // return to this once i start using react hooks.
             // setCurrentStepState(beat => {
@@ -109,13 +110,7 @@ console.log(drumKit);
 
     return (
         <div className="App">
-            <header>
-                <h1>rhythm sequencer spike</h1>
-            </header>
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
-            {BPMslider}
-
-            <p>{bpm}</p>
             <section className="sequence_grid">
                 {grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
