@@ -13,10 +13,11 @@ function StepSequencer() {
     //need to make a FETCH kits request in a useEffect.
     //fetch kits sets a reducer, which is accessed in this parent component as a menu.
     //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
+
     const samples = useSelector(store=>store.samples);
     const [ bpm, BPMslider ] = useBPM(80);
     const [ numSteps, setNumSteps ] = useState(8);
-    const [ selectedKit, setSelectedKit ] = useState(undefined);
+    const [ selectedKit, setSelectedKit ] = useState();
 
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});

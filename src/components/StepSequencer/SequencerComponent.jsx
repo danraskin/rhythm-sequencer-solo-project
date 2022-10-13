@@ -14,9 +14,10 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
 
     console.log('loaded Step Sequencer');
 
-        const BD = require(`../../samples/${selectedKit.BD}`);
-        const SD = require(`../../samples/${selectedKit.SD}`);
-        const HH = require(`../../samples/${selectedKit.HH}`);
+    const BD = require(`../../samples/${selectedKit.BD}`);
+    const SD = require(`../../samples/${selectedKit.SD}`);
+    const HH = require(`../../samples/${selectedKit.HH}`);
+    console.log('require vals:',BD,SD,HH);
 
     let started = false;
     let playing = false;
@@ -25,33 +26,32 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     // const sequenceArray = setSteps(numSteps);
     Tone.Transport.bpm.value = bpm;
 
-    // const kitBuffers = new Tone.ToneAudioBuffers({
-    //     urls: {
-    //         kitBD: BD1,
-    //         kitSD: SD1,
-    //         kitHH: HH1,
-    //     },
-    //     // baseUrl: "../../samples/",
-    //     onload: ()=> {
+    //would be interested in making sure buffers set. inessential: for later!
 
+    // const kitBuffers = new Tone.ToneAudioBuffers({
+    //         BD: BD,
+    //         SD: SD,
+    //         HH: SD,
+    //     }, ()=> {
+    //         console.log(`In KitBuffers BD: ${kitBuffers.BD}, SD: ${kitBuffers.SD}, HH: ${kitBuffers.HH}`);
     //         const bdPlayer = new Tone.Player().toDestination;
-    //         bdPlayer.buffer = kitBuffers.get(kitBD);
+    //         bdPlayer.buffer = kitBuffers.get("BD");
     //         const sdPlayer = new Tone.Player().toDestination;
-    //         sdPlayer.buffer = kitBuffers.get(kitSD);
+    //         sdPlayer.buffer = kitBuffers.get("SD");
     //         const hhPlayer = new Tone.Player().toDestination;
-    //         hhPlayer.buffer = kitBuffers.get(kitHH)
+    //         hhPlayer.buffer = kitBuffers.get("HH")
 
     //         const drumKit = [
-    //             new Tone.Player(bdBuffer),
-    //             new Tone.Player(sdBuffer),
-    //             new Tone.Player(hhBuffer) 
+    //             new Tone.Player(bdPlayer),
+    //             new Tone.Player(sdPlayer),
+    //             new Tone.Player(hhPlayer) 
     //         ]  
 
-    //         console.log('drumKit in kitBuffers', drumKit);
     //         grid = makeGrid(drumKit)
-    //         console.log('grid in kitBuffers',grid);
+    //         console.log(grid);
     //     }
-    // });
+    // );
+
     const bdBuffer = new Tone.ToneAudioBuffer(BD);
     const sdBuffer = new Tone.ToneAudioBuffer(SD);
     const hhBuffer = new Tone.ToneAudioBuffer(HH);
@@ -75,7 +75,6 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     // }
   
     const makeGrid = (drumKit) => {
-        console.log('grid in makeGrid',grid)
         const rows = [];   
         for (const sample of drumKit) {
             const row = [];
@@ -92,7 +91,6 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     };
 
     const grid = makeGrid(drumKit);
-
     const demoPlay = () => {        
         const repeat = (time) => {
             grid.forEach((row, index) => {
@@ -143,6 +141,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         console.log(step.isActive,e.target);
     }
 
+    console.log('is grid returning?',grid);
     return (
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
