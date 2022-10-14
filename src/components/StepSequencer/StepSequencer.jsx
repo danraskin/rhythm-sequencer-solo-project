@@ -7,8 +7,7 @@ import SequencerComponent from './SequencerComponent';
 
 
 function StepSequencer() {
-
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
 
     //need to make a FETCH kits request in a useEffect.
     //fetch kits sets a reducer, which is accessed in this parent component as a menu.
@@ -21,7 +20,7 @@ function StepSequencer() {
 
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});
-    },[]);
+    },[selectedKit]);
 
     const selectKit = (e)=> {
         console.log('target value is',e);

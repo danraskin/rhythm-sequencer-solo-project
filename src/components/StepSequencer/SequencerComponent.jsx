@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import * as Tone from 'tone';
 
@@ -7,23 +8,20 @@ import './StepSequencer.css';
 import StepTracker from "../StepTracker/StepTracker"
 
 function SequencerComponent({ bpm, selectedKit, numSteps}) {
+    const dispatch = useDispatch();
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
 
-    console.log('loaded Step Sequencer');
-
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
     const HH = require(`../../samples/${selectedKit.HH}`);
-    console.log('require vals:',BD,SD,HH);
 
     let started = false;
     let playing = false;
     let beat = 0;
     // let grid;
-    // const sequenceArray = setSteps(numSteps);
     Tone.Transport.bpm.value = bpm;
 
     //would be interested in making sure buffers set. inessential: for later!
@@ -52,6 +50,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     //     }
     // );
 
+
     const bdBuffer = new Tone.ToneAudioBuffer(BD);
     const sdBuffer = new Tone.ToneAudioBuffer(SD);
     const hhBuffer = new Tone.ToneAudioBuffer(HH);
@@ -61,18 +60,6 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         new Tone.Player(hhBuffer) 
     ]
      drumKit.forEach(drum => drum.toDestination());
-
-
-    // function setSteps(steps) {
-    //     const stepsArray = [];
-    //     for (let i=1; i < steps +1 ;i++) {
-    //         stepsArray.push({
-    //             step: i,
-    //             isActive: false
-    //         });
-    //     }
-    //     return stepsArray;
-    // }
   
     const makeGrid = (drumKit) => {
         const rows = [];   
@@ -97,7 +84,6 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
               let drum = drumKit[index];
               let note = row[beat];
               if (note.isActive) {
-                //drum1.triggerAttackRelease("C4", "8n", time);
                 drum.start();
               }
             });
@@ -107,9 +93,6 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
             // setCurrentStepState(beat => {
             //    return beat > 6 ? 0 : beat + 1;
             // });
-
-            //testing sans DOM
-            // drumKit[0].start();
 
         }
         Tone.Transport.scheduleRepeat(repeat, "8n");
@@ -141,6 +124,10 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         console.log(step.isActive,e.target);
     }
 
+    const savePattern = () => {
+        dispatch({type: 'CREATE_PATTERN'});
+    }
+
     console.log('is grid returning?',grid);
     return (
         <div className="App">
@@ -167,8 +154,8 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
                     
         ))}
                 </div>
-            
             </section>
+            <button onClick={e=>savePattern}>Save pattern</button>
         </div>
     )
 }
