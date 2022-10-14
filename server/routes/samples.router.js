@@ -5,18 +5,15 @@ const router = express.Router();
 /**
  * GET route template
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     console.log('in GET /samples');
-    const sqlQuery = `SELECT * FROM "sample_kits";`;
-
-    pool.query(sqlQuery)
-        .then(dbRes => {
-            res.send(dbRes.rows)
-        })
-        .catch(dbErr => {
-            console.log ('GET /samples error',dbErr);
-            res.sendStatus(500);
-        })
+    try {
+        const dbRes = await pool.query(`SELECT * FROM "sample_kits";`);
+        res.send(dbRes.rows)
+    } catch(dbErr) {
+        console.log ('GET /samples error',dbErr);
+        res.sendStatus(500);
+    }
 });
 
 /**

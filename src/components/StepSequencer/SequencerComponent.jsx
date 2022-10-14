@@ -121,14 +121,32 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     const stepToggle = (e,step) => {
         step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
-        console.log(step.isActive,e.target);
+        // console.log(step.isActive,e.target);
+    }
+
+    const makePatternObject = () => {
+        console.log(grid);
+        const pattern = [];
+        for ( let row of grid ) {
+            const setRow = []
+            for ( let step in row ) {
+                setRow.push(row[step].isActive)
+            }
+            pattern.push(setRow);
+        }
+        const patternData = {
+            //name: patternName
+            kit_id: selectedKit.id,
+            pattern: pattern
+        }
+        return patternData;
     }
 
     const savePattern = () => {
-        dispatch({type: 'CREATE_PATTERN'});
+        const patternData = makePatternObject();
+        dispatch({type: 'CREATE_PATTERN', payload: patternData});
     }
 
-    console.log('is grid returning?',grid);
     return (
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
@@ -155,7 +173,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         ))}
                 </div>
             </section>
-            <button onClick={e=>savePattern}>Save pattern</button>
+            <button onClick={e=>savePattern()}>Save pattern</button>
         </div>
     )
 }

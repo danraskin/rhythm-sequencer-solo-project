@@ -1,3 +1,5 @@
+--DROP TABLE "user", "sample_kits", "patterns", "drum_type_lookup", "steps", "pattern_params" CASCADE;
+
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
     "username" VARCHAR (80) UNIQUE NOT NULL,
@@ -18,7 +20,7 @@ CREATE TABLE "patterns" (
     "id" SERIAL PRIMARY KEY,
     -- "user_id" INT REFERENCES "user",
     "kit_id" INT REFERENCES "sample_kits" NOT NULL,
-    "name" VARCHAR (80) NOT NULL,
+    "name" VARCHAR (80) --NOT NULL,
     "steps" INT NOT NULL,
     "steps_total" INT NOT NULL,
     "inserted_at" TIMESTAMP,
@@ -53,3 +55,9 @@ INSERT INTO "sample_kits" ("name","BD","SD","HH")
     VALUES
     ('Test kit 1','BD.WAV','TOTAL_808_SAMPLE 9_S08.WAV','TOTAL_808_SAMPLE 11_S10.WAV'),
     ('Test kit 2','TOTAL_808_SAMPLE 26_S25.WAV','TOTAL_808_SAMPLE 17_S16.WAV','TOTAL_808_SAMPLE 23_S22.WAV');
+
+INSERT INTO "drum_type_lookup" ("name")
+    VALUES
+    ('BD'),
+    ('SD'),
+    ('HH');
