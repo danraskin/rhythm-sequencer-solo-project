@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 
-function StepTracker({step}) {
+function StepTracker({step, beat}) {
 
-    const[stepTracker, setStepTracker]=useState(null);
+    // const stepLight = () => {
+    //     if (beat === step.step) {
+    //         console.log('something!');
+    //     }
+    // }
 
     return(
         <div
@@ -10,7 +14,8 @@ function StepTracker({step}) {
                 step
                 step_track
                 step_track_${step.step}
-                track_active-false`}
+                track_active-false`
+            }
        ></div>
     );
 }

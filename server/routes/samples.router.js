@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
         const dbRes = await pool.query(`SELECT * FROM "sample_kits";`);
         res.send(dbRes.rows)
     } catch(dbErr) {
-        console.log ('GET /samples error',dbErr);
+        console.log ('GET /samples error: ',dbErr);
         res.sendStatus(500);
     }
 });

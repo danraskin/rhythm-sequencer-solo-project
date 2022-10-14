@@ -8,6 +8,7 @@ import './StepSequencer.css';
 import StepTracker from "../StepTracker/StepTracker"
 
 function SequencerComponent({ bpm, selectedKit, numSteps}) {
+    console.log('selectedKit', selectedKit);
     const dispatch = useDispatch();
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
@@ -17,10 +18,10 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
     const HH = require(`../../samples/${selectedKit.HH}`);
+    const beatRef = useRef(0);
 
     let started = false;
     let playing = false;
-    let beat = 0;
     // let grid;
     Tone.Transport.bpm.value = bpm;
 
@@ -77,23 +78,25 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         return rows;
     };
 
+
+
     const grid = makeGrid(drumKit);
-    const demoPlay = () => {        
+    const demoPlay = () => {  
         const repeat = (time) => {
             grid.forEach((row, index) => {
               let drum = drumKit[index];
-              let note = row[beat];
+              let note = row[beatRef.current];
               if (note.isActive) {
                 drum.start();
               }
             });
-            beat = (beat + 1) % numSteps;
-
+            beatRef.current = (beatRef.current + 1) % numSteps;
+            // beatRef.current = beat;
+            console.log(beatRef);
             // // return to this once i start using react hooks.
             // setCurrentStepState(beat => {
             //    return beat > 6 ? 0 : beat + 1;
             // });
-
         }
         Tone.Transport.scheduleRepeat(repeat, "8n");
       };
@@ -109,7 +112,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
           if (playing) {
             e.target.innerText = "Play";
             Tone.Transport.stop();
-            beat=0;
+            beatRef.current=0;
             playing = false;
           } else {
             e.target.innerText = "Stop";
@@ -121,24 +124,34 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     const stepToggle = (e,step) => {
         step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
-        // console.log(step.isActive,e.target);
+        console.log(step.isActive,e.target);
+        console.log(grid)
     }
 
     const makePatternObject = () => {
         console.log(grid);
-        const pattern = [];
+        let pattern = {};
+        const drumNames = ['BD','SD','HH'];
         for ( let row of grid ) {
             const setRow = []
             for ( let step in row ) {
                 setRow.push(row[step].isActive)
             }
-            pattern.push(setRow);
+            // pattern.push(drum);
+            pattern[drumNames[grid.indexOf(row)]] = setRow;
+            // console.log(drumKey);
+            // // pattern = {
+            // //     drumKey: setRow
+            // // }
+            // pattern.push(setRow);
         }
         const patternData = {
             //name: patternName
+            steps_total: numSteps,
             kit_id: selectedKit.id,
             pattern: pattern
         }
+        console.log('pattern is',patternData);
         return patternData;
     }
 
@@ -147,6 +160,8 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         dispatch({type: 'CREATE_PATTERN', payload: patternData});
     }
 
+
+    console.log('grid SequencerComponent',grid);
     return (
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
@@ -168,6 +183,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
                     <StepTracker
                         key={step.step}
                         step={step}
+                        beat={beatRef.current}
                     />
                     
         ))}

@@ -14,7 +14,7 @@ function StepSequencer() {
     //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
 
     const samples = useSelector(store=>store.samples);
-    const [ bpm, BPMslider ] = useBPM(80);
+    const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ selectedKit, setSelectedKit ] = useState();
 

@@ -21,7 +21,7 @@ CREATE TABLE "patterns" (
     -- "user_id" INT REFERENCES "user",
     "kit_id" INT REFERENCES "sample_kits" NOT NULL,
     "name" VARCHAR (80) --NOT NULL,
-    "steps" INT NOT NULL,
+    --"steps" INT NOT NULL,
     "steps_total" INT NOT NULL,
     "inserted_at" TIMESTAMP,
     "updated_at" TIMESTAMP
