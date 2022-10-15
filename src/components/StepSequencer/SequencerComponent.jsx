@@ -8,7 +8,8 @@ import './StepSequencer.css';
 import StepTracker from "../StepTracker/StepTracker"
 
 function SequencerComponent({ bpm, selectedKit, numSteps}) {
-    console.log('selectedKit', selectedKit);
+    // console.log('selectedKit', selectedKit);
+    const user = useSelector(store => store.user);
     const dispatch = useDispatch();
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
@@ -86,7 +87,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     
     const demoPlay = () => {  
         const repeat = (time) => {
-            gridRef.current.forEach((row, index) => {
+            grid.forEach((row, index) => {
               let drum = drumKit[index];
               let note = row[beatRef.current];
               if (note.isActive) {
@@ -149,6 +150,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         }
 
         const patternData = {
+            user: user.id,
             steps_total: numSteps,
             kit_id: selectedKit.id,
             pattern: pattern
@@ -158,8 +160,12 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     }
 
     const savePattern = () => {
-        const patternData = makePatternObject();
-        dispatch({type: 'CREATE_PATTERN', payload: patternData});
+        if (user.id) {
+            const patternData = makePatternObject();
+            dispatch({type: 'CREATE_PATTERN', payload: patternData});
+        } else {
+            alert("Register or Login to save pattern.")
+        }
     }
 
 

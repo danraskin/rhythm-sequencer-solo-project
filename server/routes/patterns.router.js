@@ -6,12 +6,13 @@ const router = express.Router();
 router.post('/', async (req, res) => {
     console.log('in POST /samples', req.body);
     const kit_id = req.body.kit_id;
+    const user_id=req.body.user;
     const steps_total = req.body.steps_total;
     const pattern = req.body.pattern;
 
     const sqlQueryPattern = `
-        INSERT INTO "patterns" ("kit_id","steps_total")
-            VALUES ($1,$2)
+        INSERT INTO "patterns" ("user_id","kit_id","steps_total")
+            VALUES ($1,$2,$3)
             RETURNING id;
         `;
     const sqlQuerySteps = `
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
 
     try {
    
-        const patternRes = await pool.query(sqlQueryPattern, [kit_id,steps_total]);
+        const patternRes = await pool.query(sqlQueryPattern, [user_id,kit_id,steps_total]);
         const patternId = patternRes.rows[0].id;
 
         //could make this concurrent, but the most data is going to be.... not v much.
