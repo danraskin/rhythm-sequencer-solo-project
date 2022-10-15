@@ -23,9 +23,10 @@ router.post('/', async (req, res) => {
    
         const patternRes = await pool.query(sqlQueryPattern, [kit_id,steps_total]);
         const patternId = patternRes.rows[0].id;
-        
+
         //could make this concurrent, but the most data is going to be.... not v much.
         for ( let i=0; i < steps_total; i ++ ) {
+            //loops through an array of length equal to number of steps. sql query called for each step in sequence.
             await pool.query( sqlQuerySteps,
                 [
                     patternId,
@@ -36,8 +37,8 @@ router.post('/', async (req, res) => {
                 ]
             )
         } 
-
         res.sendStatus(201);
+
     } catch (dbErr) {
         console.log('POST /samples error: ', dbErr),
         res.sendStatus(500);

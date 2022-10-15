@@ -22,7 +22,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
 
     let started = false;
     let playing = false;
-    // let grid;
+    
     Tone.Transport.bpm.value = bpm;
 
     //would be interested in making sure buffers set. inessential: for later!
@@ -79,11 +79,14 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     };
 
 
-
+    // grid is the active object.
     const grid = makeGrid(drumKit);
+    
+    
+    
     const demoPlay = () => {  
         const repeat = (time) => {
-            grid.forEach((row, index) => {
+            gridRef.current.forEach((row, index) => {
               let drum = drumKit[index];
               let note = row[beatRef.current];
               if (note.isActive) {
@@ -129,29 +132,28 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
     }
 
     const makePatternObject = () => {
-        console.log(grid);
-        let pattern = {};
+        // console.log(grid);
+
+        //create pattern data object
+        const pattern = {};
+        //store key names for pattern object
         const drumNames = ['BD','SD','HH'];
+
         for ( let row of grid ) {
             const setRow = []
             for ( let step in row ) {
                 setRow.push(row[step].isActive)
             }
-            // pattern.push(drum);
+            // for each 
             pattern[drumNames[grid.indexOf(row)]] = setRow;
-            // console.log(drumKey);
-            // // pattern = {
-            // //     drumKey: setRow
-            // // }
-            // pattern.push(setRow);
         }
+
         const patternData = {
-            //name: patternName
             steps_total: numSteps,
             kit_id: selectedKit.id,
             pattern: pattern
         }
-        console.log('pattern is',patternData);
+
         return patternData;
     }
 
