@@ -20,7 +20,7 @@ function* editSteps(action) {
 function* fetchPatternSteps(action) {
     try {
         const response = yield axios.get(`api/steps/${action.payload}`);
-        // console.log('in fetchPatternSteps: ', response.data);
+        console.log('in fetchPatternSteps: ', response.data);
         yield put({ type: 'SET_PATTERN_STEPS', payload: response.data });
     } catch (error) {
         console.log('error in fetchPatternSteps: ', error);

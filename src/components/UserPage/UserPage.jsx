@@ -18,7 +18,7 @@ function UserPage() {
     <div className="container">
       <h2>User: {user.username}</h2>
       {patterns.map(pattern => (
-        <div>
+        <div key={pattern.id}>
           <button onClick={()=>history.push(`/pattern/${pattern.id}`)}>{pattern.name}</button>
         </div>
       ))}

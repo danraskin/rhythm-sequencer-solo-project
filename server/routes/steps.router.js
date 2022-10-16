@@ -17,16 +17,16 @@ const router = express.Router();
 
 router.get('/:id', async (req, res) => {
     const patternId = req.params.id;
-    const sqlQuery = `
-      SELECT * FROM "steps"
-        WHERE pattern_id = $1;
-    `;
+    const sqlQueryKit = `SELECT "kit_id" from "patterns" where id = $1;`;
+    const sqlQuerySteps = `SELECT * FROM "steps" WHERE pattern_id = $1;`;
 
-
-    // JOIN TO GET KIT NUMBER
     try {
-        const stepsRes = await pool.query(sqlQuery,[patternId]);
-        res.send(stepsRes.rows);
+        const kitRes = await pool.query(sqlQueryKit,[patternId]);
+        const stepsRes = await pool.query(sqlQuerySteps,[patternId]);
+        res.send({
+            kit_id: kitRes.rows[0].kit_id,
+            grid: stepsRes.rows
+        });
     } catch (dbErr) {
         console.log('GET steps/:id error: ', dbErr);
         res.sendStatus(500);
