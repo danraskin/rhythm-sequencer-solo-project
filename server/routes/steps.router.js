@@ -17,14 +17,18 @@ const router = express.Router();
 
 router.get('/:id', async (req, res) => {
     const patternId = req.params.id;
-    const sqlQueryKit = `SELECT "kit_id" from "patterns" where id = $1;`;
+    const sqlQueryKitId = `SELECT "kit_id" from "patterns" where id = $1;`;
+    // const sqlQueryKit = `SELECT * from "sample_kits" where id = $1;`;
     const sqlQuerySteps = `SELECT * FROM "steps" WHERE pattern_id = $1;`;
 
     try {
-        const kitRes = await pool.query(sqlQueryKit,[patternId]);
+        const kitIdRes = await pool.query(sqlQueryKitId,[patternId]);
+        console.log(kitIdRes);
+        // const kitRes = await pool.query(sqlQueryKit,[kitIdRes.rows[0].kit_id])
+        // console.log(kitRes);
         const stepsRes = await pool.query(sqlQuerySteps,[patternId]);
         res.send({
-            kit_id: kitRes.rows[0].kit_id,
+            kit_id: kitIdRes.rows[0].kit_id,
             grid: stepsRes.rows
         });
     } catch (dbErr) {

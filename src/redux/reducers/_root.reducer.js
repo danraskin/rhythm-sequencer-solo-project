@@ -4,6 +4,7 @@ import user from './user.reducer';
 import samples from './samples.reducer';
 import patterns from './patterns.reducer';
 import steps from './steps.reducer';
+import selectedKit from './selectedKit.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   user, // will have an id and username if someone is logged in
   samples,
   patterns,
-  steps
+  steps,
+  selectedKit
 });
 
 export default rootReducer;

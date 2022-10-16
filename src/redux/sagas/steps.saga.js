@@ -21,7 +21,8 @@ function* fetchPatternSteps(action) {
     try {
         const response = yield axios.get(`api/steps/${action.payload}`);
         console.log('in fetchPatternSteps: ', response.data);
-        yield put({ type: 'SET_PATTERN_STEPS', payload: response.data });
+        yield put({ type: 'SET_PATTERN_STEPS', payload: response.data.grid });
+        yield put({ type: 'SET_SELECTED_KIT', payload: response.data.kit_id})
     } catch (error) {
         console.log('error in fetchPatternSteps: ', error);
     }

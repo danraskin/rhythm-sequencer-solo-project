@@ -8,9 +8,13 @@ import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
 function SequencerComponent({ bpm, selectedKit, numSteps, patternName}) {
-    // console.log('selectedKit', selectedKit);
-    const user = useSelector(store => store.user);
+    
     const dispatch = useDispatch();
+    
+    const user = useSelector(store => store.user);
+    const selectedKit = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
+    const samples = useSelector(store=>store.samples);
+
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);

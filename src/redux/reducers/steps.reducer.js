@@ -1,4 +1,4 @@
-const steps = (state = [], action) => {
+const steps = (state = {}, action) => {
     switch (action.type) {
       case 'SET_PATTERN_STEPS':
         return action.payload;
