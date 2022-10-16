@@ -3,8 +3,10 @@ const pool = require('../modules/pool');
 const router = express.Router();
 
 
+
+//POST new pattern
 router.post('/', async (req, res) => {
-    console.log('in POST /samples', req.body);
+    console.log('in POST /patterns', req.body);
     const kit_id = req.body.kit_id;
     const user_id=req.body.user;
     const steps_total = req.body.steps_total;
@@ -41,10 +43,22 @@ router.post('/', async (req, res) => {
         res.sendStatus(201);
 
     } catch (dbErr) {
-        console.log('POST /samples error: ', dbErr),
+        console.log('POST /patterns error: ', dbErr),
         res.sendStatus(500);
     }
+});
 
+router.get('/user', async (req, res) => {
+    const sqlQuery = `
+      SELECT * FROM "patterns" WHERE user_id = $1;
+    `;
+    try {
+        const patternsRes = await pool.query(sqlQuery,[req.user.id])
+        res.send(patternsRes.rows);
+    } catch (dbErr) {
+        console.log('GET /patterns/user');
+        res.sendStatus(500);
+    }
 });
 
 module.exports = router;
