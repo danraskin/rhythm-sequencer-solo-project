@@ -14,6 +14,8 @@ import Footer from '../Footer/Footer';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 import StepSequencer from '../StepSequencer/StepSequencer';
+import SequencerSavedPattern from '../StepSequencer/SequencerSavedPattern';
+
 
 import AboutPage from '../AboutPage/AboutPage';
 import UserPage from '../UserPage/UserPage';
@@ -35,7 +37,7 @@ function App() {
       <div>
         <Nav />
         <Switch>
-          <Redirect exact from="/" to="/home" />
+          <Redirect exact from="/" to="/pattern" />
           <Route
             exact
             path="/about"
@@ -44,7 +46,6 @@ function App() {
           </Route>
 
         <ProtectedRoute
-          // logged in shows UserPage else shows LoginPage
           exact
           path="/user"
         >
@@ -77,10 +78,17 @@ function App() {
 
           <Route
             exact
-            path="/home"
+            path="/pattern"
           >
             <StepSequencer />
           </Route>
+
+          <ProtectedRoute
+            exact
+            path="/pattern/:id"
+          >
+            <SequencerSavedPattern />
+          </ProtectedRoute>
 
           <Route>
             <h1>404</h1>

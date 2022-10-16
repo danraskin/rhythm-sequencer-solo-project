@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as Tone from 'tone';
 
 import './StepSequencer.css';
-import StepTracker from "../StepTracker/StepTracker"
+import StepTracker from "./StepTracker"
 
 function SequencerComponent({ bpm, selectedKit, numSteps, patternName}) {
     // console.log('selectedKit', selectedKit);
