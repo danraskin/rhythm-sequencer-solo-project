@@ -17,6 +17,7 @@ function StepSequencer() {
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ selectedKit, setSelectedKit ] = useState();
+    const [ patternName, setPatternName ] = useState('new pattern');
 
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});
@@ -68,6 +69,7 @@ function StepSequencer() {
             <header>
                 <h1>rhythm sequencer</h1>
             </header>
+            <input type="text" value={patternName} placeholder="new pattern" onChange={e=>setPatternName(e.target.value)} />
             {BPMslider}
             <p>{bpm}</p>
             <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
@@ -91,6 +93,7 @@ function StepSequencer() {
                 BPMslider={BPMslider}
                 selectedKit={selectedKit}
                 numSteps={numSteps}
+                patternName={patternName}
                
             />
             }

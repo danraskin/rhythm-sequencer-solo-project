@@ -8,3 +8,5 @@ const test = {
 for (let drum in test) {
     console.log(`${drum}: ${test[drum]}`);
 }
+
+'' ? console.log("''",true) : console.log("''",false);

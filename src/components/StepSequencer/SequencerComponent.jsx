@@ -7,7 +7,7 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "../StepTracker/StepTracker"
 
-function SequencerComponent({ bpm, selectedKit, numSteps}) {
+function SequencerComponent({ bpm, selectedKit, numSteps, patternName}) {
     // console.log('selectedKit', selectedKit);
     const user = useSelector(store => store.user);
     const dispatch = useDispatch();
@@ -150,6 +150,7 @@ function SequencerComponent({ bpm, selectedKit, numSteps}) {
         }
 
         const patternData = {
+            name: patternName,
             user: user.id,
             steps_total: numSteps,
             kit_id: selectedKit.id,
