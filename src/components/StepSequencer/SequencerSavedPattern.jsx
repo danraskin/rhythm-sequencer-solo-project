@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector,useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
+
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
@@ -9,19 +11,25 @@ import SequencerComponent from './SequencerComponent';
 function SequencerSavedPattern() {
     const dispatch = useDispatch();
 
-    //need to make a FETCH kits request in a useEffect.
-    //fetch kits sets a reducer, which is accessed in this parent component as a menu.
-    //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
-
+    const params = useParams(); //NEW FOR PATTERN/ID
+    const patternId = params.id; //NEW FOR PATTERN/ID
+    
     const samples = useSelector(store=>store.samples);
+    const steps = useSelector(store=>store.steps);
+
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ selectedKit, setSelectedKit ] = useState();
     const [ patternName, setPatternName ] = useState('new pattern');
 
+    //need to make a FETCH kits request in a useEffect.
+    //fetch kits sets a reducer, which is accessed in this parent component as a menu.
+    //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
+
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});
-    },[selectedKit]);
+        dispatch({type:'FETCH_PATTERN_STEPS', payload: patternId}) //NEW FOR PATTERN/ID
+    },[]);
 
     const selectKit = (e)=> {
         console.log('target value is',e);

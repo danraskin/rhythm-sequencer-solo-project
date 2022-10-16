@@ -21,7 +21,7 @@ function StepSequencer() {
 
     useEffect( () => {
         dispatch({type: 'FETCH_SAMPLES'});
-    },[selectedKit]);
+    },[]);
 
     const selectKit = (e)=> {
         console.log('target value is',e);

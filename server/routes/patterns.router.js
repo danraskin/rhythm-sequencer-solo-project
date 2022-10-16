@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
         res.sendStatus(201);
 
     } catch (dbErr) {
-        console.log('POST /patterns error: ', dbErr),
+        console.log('POST /patterns error: ', dbErr);
         res.sendStatus(500);
     }
 });

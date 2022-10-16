@@ -20,8 +20,8 @@ function* fetchUserPatterns(action) {
     try {
         // console.log('in fetchUserPattern: ',action.payload);
         const response = yield axios.get('api/patterns/user');
-        console.log(response.data);
-        yield put({ type: 'SET_USER_PATTERNS', payload: response.data }); //has not been created
+        // console.log(response.data);
+        yield put({ type: 'SET_USER_PATTERNS', payload: response.data });
     } catch (error) {
         console.log('error in fetchUserPatterns: ', error);
     }

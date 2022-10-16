@@ -1,11 +1,11 @@
-const patterns = (state = [], action) => {
+const steps = (state = [], action) => {
     switch (action.type) {
-      case 'SET_USER_PATTERNS':
+      case 'SET_PATTERN_STEPS':
         return action.payload;
       default:
         return state;
     }
   };
   
-  export default patterns;
+  export default steps;
   
