@@ -7,22 +7,32 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponent({ bpm, selectedKit, numSteps, patternName}) {
+function SequencerComponent({ bpm, numSteps, patternName}) {
     
     const dispatch = useDispatch();
-    
+
     const user = useSelector(store => store.user);
-    const selectedKit = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
+    const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
     const samples = useSelector(store=>store.samples);
+    const [ selectedKit, setSelectedKit ] = useState(samples[0]);
 
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
+    useEffect(()=>{
+        samples.map(kit => {
+            if (kit.id === selectedKitId) {
+                setSelectedKit(kit);
+            }
+        })
+    },[]);
+ 
 
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
-    const HH = require(`../../samples/${selectedKit.HH}`);
+    const HH = require(`../../samples/${selectedKit.HH}`); 
+
     const beatRef = useRef(0);
 
     let started = false;
