@@ -27,7 +27,7 @@ where {...} = {step: 0, isActive: true, sample: PLAYER}
 
 drumKit is currently defined and created in the component, and references 'selectedKit,' which is an object in redux state containing sample URLS.
 
-![object definition and useEffect](Screen Shot 2022-10-17 at 1.16.42 PM.png)
+![object definition and useEffect](./help2.png)
 
 
 CURRENT PROBLEMS:
@@ -38,7 +38,7 @@ I dispatch a new grid ( makeGrid(drumKit) ) to the reducer in useEffect (see abo
 
 The prerequisites for a playable grid is DRUMKIT with players. however, the grid that is defined in my useEffect does not contain 'Players,' it contains function definitions.
 
-![console shows grid object details, { ...sample: f}](./Screen Shot 2022-10-17 at 1.12.22 PM.png)
+![console shows grid object details, { ...sample: f}](./help.png)
 
 should be { ...sample: Player}
 
