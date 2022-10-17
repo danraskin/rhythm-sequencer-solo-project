@@ -15,7 +15,8 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
     const samples = useSelector(store=>store.samples);
     const steps = useSelector(store=>store.steps);
-    const gridX = useSelector(store=>store.grid);
+    // const gridX = useSelector(store=>store.grid);
+
     console.log('steps: ', steps);
 
     const [ selectedKit, setSelectedKit ] = useState(samples[0]);
@@ -30,45 +31,36 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
     const HH = require(`../../samples/${selectedKit.HH}`); 
-    const drumKit = [];
 
-    const kitBuffers = new Tone.ToneAudioBuffers({
-            BD: BD,
-            SD: SD,
-            HH: HH
-        }, ()=> console.log('loaded') //this function runs *after* buffers are loaded, but i dont know how to incorporate an "await" element here.
-    );
+    const bdBuffer = new Tone.ToneAudioBuffer(BD);
+    const sdBuffer = new Tone.ToneAudioBuffer(SD);
+    const hhBuffer = new Tone.ToneAudioBuffer(HH);
+    const drumKit = [
+        new Tone.Player(bdBuffer),
+        new Tone.Player(sdBuffer),
+        new Tone.Player(hhBuffer) 
+    ]
+    drumKit.forEach(drum => drum.toDestination());
 
-    drumKit.push(
-        new Tone.Player(kitBuffers.BD).toDestination
-    );
-    drumKit.push(
-        new Tone.Player(kitBuffers.SD).toDestination
-    );
-    drumKit.push(
-        new Tone.Player(kitBuffers.HH).toDestination
-    );    
+    console.log('drumkit',drumKit);
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
     useEffect(()=>{
-        for (let kit of samples) {
-            if (kit.id === selectedKitId) {
-                setSelectedKit(kit);
-            }
-        }
+        // for (let kit of samples) {
+        //     if (kit.id === selectedKitId) {
+        //         setSelectedKit(kit);
+        //     }
+        // }
         console.log('useEffect drumkit', drumKit);
-        dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
+
+
+        // dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
+        console.log(gridX);
 
     },[]);
  
-
-
-   
-
-    
-
   
     const makeGrid = (drumKit) => {
         const rows = [];   
@@ -85,15 +77,10 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
         };
         return rows;
     };
+    const [gridX, setGridX] = useState( ()=>makeGrid(drumKit) );
 
 
     // grid is the active object.
-    // const grid = makeGrid(drumKit);
-
-
-    
-    
-    
     
     const demoPlay = () => { 
         console.log('gridX',gridX);
