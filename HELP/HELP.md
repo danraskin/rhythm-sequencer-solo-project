@@ -27,7 +27,7 @@ where {...} = {step: 0, isActive: true, sample: PLAYER}
 
 drumKit is currently defined and created in the component, and references 'selectedKit,' which is an object in redux state containing sample URLS.
 
-![object definition and useEffect](./Screen Shot 2022-10-17 at 1.16.42 PM.png)
+![object definition and useEffect](Screen Shot 2022-10-17 at 1.16.42 PM.png)
 
 
 CURRENT PROBLEMS:
