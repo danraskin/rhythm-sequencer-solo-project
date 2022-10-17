@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
+
 import errors from './errors.reducer';
 import user from './user.reducer';
 import samples from './samples.reducer';
 import patterns from './patterns.reducer';
 import steps from './steps.reducer';
 import selectedKit from './selectedKit.reducer';
+import grid from './grid.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -18,7 +20,8 @@ const rootReducer = combineReducers({
   samples,
   patterns,
   steps,
-  selectedKit
+  selectedKit,
+  grid
 });
 
 export default rootReducer;

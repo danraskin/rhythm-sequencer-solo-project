@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
-import SequencerComponent from './SequencerComponent';
+import SequencerComponentReducerGrid from './SequencerComponentReducerGrid';
 
 
 function SequencerSavedPattern() {
@@ -17,7 +17,6 @@ function SequencerSavedPattern() {
     const [ patternName, setPatternName ] = useState('new pattern');
 
     const samples = useSelector(store=>store.samples);
-    const steps = useSelector(store=>store.steps);
     const selectedKit = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
 
     const params = useParams(); //NEW FOR /PATTERN/ID
@@ -34,7 +33,6 @@ function SequencerSavedPattern() {
    
 
 
-    console.log('steps: ',steps);
     console.log('kit: ',samples, selectedKit);
  
 
@@ -101,13 +99,13 @@ function SequencerSavedPattern() {
                 </select>
             </form> */}
             <div id="kit_selector">
-                {!samples? null : samples.map(kit=> (
+                {!samples ? null : samples.map(kit=> (
                     <button key={kit.id} onClick={e=>selectKit(e.target.value)} value={kit.id}>{kit.name}</button>
                 ))}
             </div>
 
             {!selectedKit ? null :
-            <SequencerComponent
+            <SequencerComponentReducerGrid
                 bpm = {bpm} 
                 numSteps={numSteps}
                 patternName={patternName}

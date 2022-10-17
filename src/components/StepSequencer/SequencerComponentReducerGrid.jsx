@@ -7,16 +7,47 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponent({ bpm, numSteps, patternName}) {
+function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     
     const dispatch = useDispatch();
 
     const user = useSelector(store => store.user);
     const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
     const samples = useSelector(store=>store.samples);
+    const steps = useSelector(store=>store.steps);
+    const gridX = useSelector(store=>store.grid);
+    console.log('steps: ', steps);
 
     const [ selectedKit, setSelectedKit ] = useState(samples[0]);
 
+    const beatRef = useRef(0);
+
+    let started = false;
+    let playing = false;
+    
+    Tone.Transport.bpm.value = bpm;
+
+    const BD = require(`../../samples/${selectedKit.BD}`);
+    const SD = require(`../../samples/${selectedKit.SD}`);
+    const HH = require(`../../samples/${selectedKit.HH}`); 
+    const drumKit = [];
+
+    const kitBuffers = new Tone.ToneAudioBuffers({
+            BD: BD,
+            SD: SD,
+            HH: HH
+        }, ()=> console.log('loaded') //this function runs *after* buffers are loaded, but i dont know how to incorporate an "await" element here.
+    );
+
+    drumKit.push(
+        new Tone.Player(kitBuffers.BD).toDestination
+    );
+    drumKit.push(
+        new Tone.Player(kitBuffers.SD).toDestination
+    );
+    drumKit.push(
+        new Tone.Player(kitBuffers.HH).toDestination
+    );    
 
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
@@ -27,59 +58,17 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
                 setSelectedKit(kit);
             }
         }
+        console.log('useEffect drumkit', drumKit);
+        dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
+
     },[]);
  
 
-    const BD = require(`../../samples/${selectedKit.BD}`);
-    const SD = require(`../../samples/${selectedKit.SD}`);
-    const HH = require(`../../samples/${selectedKit.HH}`); 
 
-    const beatRef = useRef(0);
-
-    let started = false;
-    let playing = false;
-    
-    Tone.Transport.bpm.value = bpm;
-
-    //would be interested in making sure buffers set. inessential: for later!
-
-    // const kitBuffers = new Tone.ToneAudioBuffers({
-    //         BD: BD,
-    //         SD: SD,
-    //         HH: SD,
-    //     }, ()=> {
-    //         console.log(`In KitBuffers BD: ${kitBuffers.BD}, SD: ${kitBuffers.SD}, HH: ${kitBuffers.HH}`);
-    //         const bdPlayer = new Tone.Player().toDestination;
-    //         bdPlayer.buffer = kitBuffers.get("BD");
-    //         const sdPlayer = new Tone.Player().toDestination;
-    //         sdPlayer.buffer = kitBuffers.get("SD");
-    //         const hhPlayer = new Tone.Player().toDestination;
-    //         hhPlayer.buffer = kitBuffers.get("HH")
-
-    //         const drumKit = [
-    //             new Tone.Player(bdPlayer),
-    //             new Tone.Player(sdPlayer),
-    //             new Tone.Player(hhPlayer) 
-    //         ]  
-
-    //         grid = makeGrid(drumKit)
-    //         console.log(grid);
-    //     }
-    // );
-
-    // kitBuffers;
+   
 
     
-    const bdBuffer = new Tone.ToneAudioBuffer(BD);
-    const sdBuffer = new Tone.ToneAudioBuffer(SD);
-    const hhBuffer = new Tone.ToneAudioBuffer(HH);
-    const drumKit = [
-        new Tone.Player(bdBuffer),
-        new Tone.Player(sdBuffer),
-        new Tone.Player(hhBuffer) 
-    ]
-    drumKit.forEach(drum => drum.toDestination());
-    
+
   
     const makeGrid = (drumKit) => {
         const rows = [];   
@@ -99,13 +88,18 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
 
 
     // grid is the active object.
-    const grid = makeGrid(drumKit);
+    // const grid = makeGrid(drumKit);
+
+
     
     
     
-    const demoPlay = () => {  
+    
+    const demoPlay = () => { 
+        console.log('gridX',gridX);
+
         const repeat = (time) => {
-            grid.forEach((row, index) => {
+            gridX.forEach((row, index) => {
               let drum = drumKit[index];
               let note = row[beatRef.current];
               if (note.isActive) {
@@ -147,7 +141,7 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
         step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
         console.log(step.isActive,e.target);
-        console.log(grid)
+        console.log(gridX)
     }
 
     const makePatternObject = () => {
@@ -188,12 +182,12 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
     }
 
 
-    console.log('grid SequencerComponent',grid);
+    console.log('grid SequencerComponent',gridX);
     return (
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
             <section className="sequence_grid">
-                {!grid ? null : grid.map( (row,i) => (
+                { Object.entries(gridX).length === 0  ? null : gridX.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
                         {row.map(step => (
                             <div
@@ -206,7 +200,7 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
                     </div>
                 ))}
                 <div className="row row_track">
-                {!grid ? null : grid[0].map(step => (
+                { Object.entries(gridX).length === 0 ? null : gridX[0].map(step => (
                     <StepTracker
                         key={step.step}
                         step={step}
@@ -216,9 +210,9 @@ function SequencerComponent({ bpm, numSteps, patternName}) {
         ))}
                 </div>
             </section>
-            <button onClick={e=>savePattern()}>Save pattern</button>
+            <button onClick={()=>savePattern()}>Save pattern</button>
         </div>
     )
 }
 
-export default SequencerComponent;
+export default SequencerComponentReducerGrid;

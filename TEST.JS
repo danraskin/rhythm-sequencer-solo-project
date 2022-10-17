@@ -9,4 +9,8 @@ for (let drum in test) {
     console.log(`${drum}: ${test[drum]}`);
 }
 
-'' ? console.log("''",true) : console.log("''",false);
+const nullObj = {}
+const obj = {}
+
+console.log( Object.entries(nullObj),true)
+ Object.entries(nullObj).length === 0 ? console.log("''",true) : console.log("''",false);
