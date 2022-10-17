@@ -16,6 +16,9 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     const samples = useSelector(store=>store.samples);
     const steps = useSelector(store=>store.steps);
     // const gridX = useSelector(store=>store.grid);
+    // const [gridX, setGridX] = useState( ()=>makeGrid(drumKit) );
+    const [gridX, setGridX] = useState([]);
+
 
     console.log('steps: ', steps);
 
@@ -27,7 +30,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     let playing = false;
     
     Tone.Transport.bpm.value = bpm;
-
+    
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
     const HH = require(`../../samples/${selectedKit.HH}`); 
@@ -48,20 +51,19 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
     useEffect(()=>{
-        // for (let kit of samples) {
-        //     if (kit.id === selectedKitId) {
-        //         setSelectedKit(kit);
-        //     }
-        // }
+        for (let kit of samples) {
+            if (kit.id === selectedKitId) {
+                setSelectedKit(kit);
+            }
+        }
         console.log('useEffect drumkit', drumKit);
-
+        makeGrid(drumKit);
 
         // dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
         console.log(gridX);
 
     },[]);
  
-  
     const makeGrid = (drumKit) => {
         const rows = [];   
         for (const sample of drumKit) {
@@ -75,10 +77,9 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
             }
             rows.push(row);
         };
-        return rows;
+        setGridX(rows);
+        // return rows;
     };
-    const [gridX, setGridX] = useState( ()=>makeGrid(drumKit) );
-
 
     // grid is the active object.
     
@@ -145,7 +146,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
                 setRow.push(row[step].isActive)
             }
             // for each 
-            pattern[drumNames[grid.indexOf(row)]] = setRow;
+            pattern[drumNames[gridX.indexOf(row)]] = setRow;
         }
 
         const patternData = {

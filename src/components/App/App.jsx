@@ -30,6 +30,8 @@ function App() {
 
   useEffect(() => {
     dispatch({ type: 'FETCH_USER' });
+    dispatch({type: 'FETCH_SAMPLES'});
+
   }, [dispatch]);
   
   return (

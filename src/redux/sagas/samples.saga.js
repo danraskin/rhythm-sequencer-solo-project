@@ -10,8 +10,16 @@ function* fetchSamples() {
     }
 }
 
+function* selectKit(action) {
+    for (let kit of samples) {
+        if (kit.id === action.payload) {
+        }
+    }
+}
+
 function* samplesSaga() {
     yield takeLatest('FETCH_SAMPLES', fetchSamples);
+    yield takeLatest('SELECT_KIT', selectKit);
   }
 
   export default samplesSaga;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { put, takeLatest } from 'redux-saga/effects';
+import { useDispatch } from 'react-redux'
 
 function* editSteps(action) {
     // PUT
@@ -18,19 +19,45 @@ function* editSteps(action) {
 }
 
 function* fetchPatternSteps(action) {
+
+    const patternId = action.payload.patternId;
+    const samples = action.payload.samples;
+
     try {
-        const response = yield axios.get(`api/steps/${action.payload}`);
-        console.log('in fetchPatternSteps: ', response.data);
-        yield put({ type: 'SET_PATTERN_STEPS', payload: response.data.grid });
-        yield put({ type: 'SET_SELECTED_KIT', payload: response.data.kit_id})
+        const response = yield axios.get(`api/steps/${patternId}`);
+
+        console.log('in fetchPatternSteps: ', patternId, samples, response.data);
+
+        yield put({
+            type: 'SET_PATTERN_STEPS',
+            payload: response.data.grid
+        }); 
+
+        yield put({
+            type: 'SET_SELECTED_KIT',
+            payload: {
+                kit_id: response.data.kit_id,
+                samples
+            }});
+
     } catch (error) {
         console.log('error in fetchPatternSteps: ', error);
     }
 }
 
+function* transformSteps(action) {
+
+
+
+}
+
+
+
+
 function* stepsSaga() {
     yield takeLatest('EDIT_STEPS', editSteps);
-    yield takeLatest('FETCH_PATTERN_STEPS', fetchPatternSteps)
+    yield takeLatest('FETCH_PATTERN_STEPS', fetchPatternSteps);
+    yield takeLatest('TRANSFORM_STEPS', transformSteps)
   }
 
   export default stepsSaga;

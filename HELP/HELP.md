@@ -43,4 +43,11 @@ The prerequisites for a playable grid is DRUMKIT with players. however, the grid
 should be { ...sample: Player}
 
 Figuring out how to mount component with a functioning, playable GRID set to redux state is the first step in loading saved patterns.
+
 i'm several steps away from reaching full CRUD, and figuring this out may require some *serious* digging into the component guts. want to keep making progress, but feel a need to re-evaluate my game plan. am i reworking guts iteratively? do i have a full plan? How much time should i spend making a plan?
+
+## NEXT STEP OUTLINE ##
+
+* form GRID from STEPS data. This sequencer component should mount with stored pattern.
+
+* i don't know where to position the setSelectedKit
