@@ -81,11 +81,11 @@ function StepSequencer() {
                         ))}
                 </select>
             </form> */}
-            <div id="kit_selector">
+            {/* <div id="kit_selector">
                 {!samples? null : samples.map(kit=> (
                     <button key={kit.id} onClick={e=>selectKit(kit)} value={kit}>{kit.name}</button>
                 ))}
-            </div>
+            </div> */}
 
             {!selectedKit ? null :
             <SequencerComponent
