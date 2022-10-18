@@ -7,7 +7,7 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumArr}) {
+function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid}) {
     
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
@@ -20,15 +20,15 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
     console.log(grid)
     
     
-    const demoPlay = () => { 
-        console.log('in demoPlay', drumArr);
+    const playSequencer = () => { 
+        // console.log('in demoPlay', drumArr);
 
         const repeat = (time) => {
             grid.forEach((row, index) => {
-              let drum = drumArr[index];
+            //   let drum = drumArr[index];
               let note = row[beatRef.current];
               if (note.isActive) {
-                drum.start();
+                note.sample.start();
               }
             });
             beatRef.current = (beatRef.current + 1) % numSteps;
@@ -39,19 +39,20 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
       };
 
     const configPlayButton = (e) => {
-          if (!started) {
-            Tone.start();
+          if (!started) { //this triggers Tone.start() the FIRST TIME user clicks' start.
+            Tone.start(); //whatever's happening, this isn't triggering properly.
             Tone.getDestination().volume.rampTo(-10, 0.001)
-            demoPlay();
-            started = true;
+            playSequencer();
+            started = true; //this toggles true, which prevents a second instance of Tone.start()
           }
       
           if (playing) {
             e.target.innerText = "Play";
-            Tone.Transport.stop();
+            Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'playSequencer()'
             beatRef.current=0;
             playing = false;
           } else {
+            beatRef.current=0;
             e.target.innerText = "Stop";
             Tone.Transport.start();
             playing = true;
@@ -77,7 +78,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
             // for each 
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
-
+//needs to know KIT. this was used to make the grid, and not stored anywhere.
         const patternData = {
             name: patternName,
             user: user.id,

@@ -38,6 +38,7 @@ function* fetchPatternSteps(action) {
             // type: 'SELECT_KIT', // SEND TO SAGA
             payload: {
                 kit_id: response.data.kit_id,
+                name: response.data.name,
                 samples
             }});
 
