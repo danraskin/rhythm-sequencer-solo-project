@@ -15,20 +15,23 @@ function SequencerSavedPattern() {
     const patternId = params.id; //NEW FOR /PATTERN/ID
     const samples = useSelector(store=>store.samples);
     
-    const [ grid, setGrid ] = useState([])
+    const [ gridX, setGrid ] = useState([])
 
 
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     // const [ selectedKit, setSelectedKit ] = useState();
     const [ patternName, setPatternName ] = useState('new pattern');
+    
+    const [ drumArr, setDrumArr ] = useState([]);
 
 
 
 
     useEffect( () => {
         buildGrid(patternId);
-        console.log('in useEffect', grid, !grid[0]);
+        console.log('in useEffect', gridX, !gridX[0]);
+        console.log('in useEffect', drumArr)
         // console.log('in useEffect',patternId, samples);
         // dispatch({type:'FETCH_PATTERN_STEPS', payload: {patternId, samples}}) //NEW FOR /PATTERN/ID      
     },[]);
@@ -50,13 +53,15 @@ function SequencerSavedPattern() {
             const steps_total = patternData.data.steps_total;
             
             drumKit = buildDrumKit(sampless, kit_id);
+            
+            setDrumArr( buildDrumArr(drumKit) );
+
             console.log('in buildGrid',drumKit);
+
             grid = formatSteps(steps, steps_total, drumKit)
 
             // grid = formatSteps(steps, steps_total, drumKit);
-            setGrid( 
-                grid
-            );
+            setGrid( grid );
 
             console.log('in buildGrid', grid)
 
@@ -91,6 +96,17 @@ function SequencerSavedPattern() {
 
         return drumKit;
     }
+
+    const buildDrumArr = (drumKit) => {
+        //re-sets drumKit to array form for sequencer playback
+        const drumArr = []
+        for ( const drum in drumKit) {
+            drumArr.push(drumKit[drum]);
+            // console.log('in setDrumKitArray', drumKit[drum]);
+        }
+        return drumArr;
+    }
+    
 
     const formatSteps = (steps, steps_total, drumKit) => {
         // console.log('in formatSteps', steps);
@@ -145,13 +161,14 @@ function SequencerSavedPattern() {
                 ))}
             </div>
 
-            { !grid[0] ? null :
-            // <SequencerComponentReducerGrid
-            //     bpm = {bpm} 
-            //     numSteps={numSteps}
-            //     patternName={patternName}
-            // />
-            <div className="sequence_grid">should render</div>
+            { !gridX[0] ? null :
+            <SequencerComponentReducerGrid
+                bpm = {bpm} 
+                numSteps={numSteps}
+                patternName={patternName}
+                grid={gridX}
+                drumArr={drumArr}
+            />
             }
         </div>
         

@@ -7,22 +7,21 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
+function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumArr}) {
     
     const dispatch = useDispatch();
 
     const user = useSelector(store => store.user);
-    const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
-    const samples = useSelector(store=>store.samples);
-    const steps = useSelector(store=>store.steps);
+    // const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
+    // const samples = useSelector(store=>store.samples);
+    // const steps = useSelector(store=>store.steps);
     // const gridX = useSelector(store=>store.grid);
     // const [gridX, setGridX] = useState( ()=>makeGrid(drumKit) );
-    const [gridX, setGridX] = useState([]);
+    // const [gridX, setGridX] = useState([]);
 
 
-    console.log('steps: ', steps);
 
-    const [ selectedKit, setSelectedKit ] = useState(samples[0]);
+    // const [ selectedKit, setSelectedKit ] = useState(samples[0]);
 
     const beatRef = useRef(0);
 
@@ -31,75 +30,48 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     
     Tone.Transport.bpm.value = bpm;
     
-    const BD = require(`../../samples/${selectedKit.BD}`);
-    const SD = require(`../../samples/${selectedKit.SD}`);
-    const HH = require(`../../samples/${selectedKit.HH}`);
-
-    const makeBuffers = ()=> {
-        const buffers = {
-            BD,
-            SD,
-            HH
-        }
-        dispatch({type: 'CREATE_BUFFERS', payload: buffers})
-    }
-    makeBuffers();
-
-
-    const bdBuffer = new Tone.ToneAudioBuffer(BD);
-    const sdBuffer = new Tone.ToneAudioBuffer(SD);
-    const hhBuffer = new Tone.ToneAudioBuffer(HH);
-    const drumKit = [
-        new Tone.Player(bdBuffer),
-        new Tone.Player(sdBuffer),
-        new Tone.Player(hhBuffer) 
-    ]
-    drumKit.forEach(drum => drum.toDestination());
-
-    console.log('drumkit',drumKit);
-
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
-    useEffect(()=>{
-        // for (let kit of samples) {
-        //     if (kit.id === selectedKitId) {
-        //         setSelectedKit(kit);
-        //     }
-        // }
-        console.log('useEffect drumkit', drumKit);
-        makeGrid(drumKit);
+    // useEffect(()=>{
+    //     // for (let kit of samples) {
+    //     //     if (kit.id === selectedKitId) {
+    //     //         setSelectedKit(kit);
+    //     //     }
+    //     // }
+    //     console.log('useEffect drumkit', drumKit);
+    //     makeGrid(drumKit);
 
-        // dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
-        console.log(gridX);
+    //     // dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
+    //     console.log(gridX);
 
-    },[]);
+    // },[]);
  
-    const makeGrid = (drumKit) => {
-        const rows = [];   
-        for (const sample of drumKit) {
-            const row = [];
-            for (let i = 0; i < numSteps; i++) {
-                row.push({
-                step: i,
-                sample: sample,
-                isActive: false
-                });
-            }
-            rows.push(row);
-        };
-        setGridX(rows);
-        // return rows;
-    };
+    // const makeGrid = (drumKit) => {
+    //     const rows = [];   
+    //     for (const sample of drumKit) {
+    //         const row = [];
+    //         for (let i = 0; i < numSteps; i++) {
+    //             row.push({
+    //             step: i,
+    //             sample: sample,
+    //             isActive: false
+    //             });
+    //         }
+    //         rows.push(row);
+    //     };
+    //     setGridX(rows);
+    //     // return rows;
+    // };
 
     // grid is the active object.
     
     const demoPlay = () => { 
-        console.log('gridX',gridX);
+        // console.log('gridX',gridX);
 
-        const repeat = (time) => {
-            gridX.forEach((row, index) => {
-              let drum = drumKit[index];
+        const repeat = () => {
+            grid.forEach((row, index) => {
+              let drum = drumArr[index];
               let note = row[beatRef.current];
               if (note.isActive) {
                 drum.start();
@@ -140,7 +112,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
         step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
         console.log(step.isActive,e.target);
-        console.log(gridX)
+        // console.log(grid)
     }
 
     const makePatternObject = () => {
@@ -151,13 +123,13 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
         //store key names for pattern object
         const drumNames = ['BD','SD','HH'];
 
-        for ( let row of gridX ) {
+        for ( let row of grid ) {
             const setRow = []
             for ( let step in row ) {
                 setRow.push(row[step].isActive)
             }
             // for each 
-            pattern[drumNames[gridX.indexOf(row)]] = setRow;
+            pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
 
         const patternData = {
@@ -180,13 +152,11 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
         }
     }
 
-
-    console.log('grid SequencerComponent',gridX);
     return (
         <div className="App">
             <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
             <section className="sequence_grid">
-                { Object.entries(gridX).length === 0  ? null : gridX.map( (row,i) => (
+                { Object.entries(grid).length === 0  ? null : grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
                         {row.map(step => (
                             <div
@@ -199,7 +169,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
                     </div>
                 ))}
                 <div className="row row_track">
-                { Object.entries(gridX).length === 0 ? null : gridX[0].map(step => (
+                { Object.entries(grid).length === 0 ? null : grid[0].map(step => (
                     <StepTracker
                         key={step.step}
                         step={step}
