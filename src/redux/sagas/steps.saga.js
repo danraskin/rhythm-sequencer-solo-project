@@ -34,7 +34,8 @@ function* fetchPatternSteps(action) {
         }); 
 
         yield put({
-            type: 'SET_SELECTED_KIT',
+            type: 'SET_SELECTED_KIT', //SEND TO REDUCER
+            // type: 'SELECT_KIT', // SEND TO SAGA
             payload: {
                 kit_id: response.data.kit_id,
                 samples

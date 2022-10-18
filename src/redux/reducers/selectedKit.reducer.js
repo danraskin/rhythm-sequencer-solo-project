@@ -9,6 +9,8 @@ const selectedKit = (state = {}, action) => {
             return kit;
           }
         }
+        // console.log('in selectKit reducer: ', action.payload);
+        return action.payload
       default:
         return state;
     }

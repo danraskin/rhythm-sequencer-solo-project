@@ -14,3 +14,4 @@ const obj = {}
 
 console.log( Object.entries(nullObj),true)
  Object.entries(nullObj).length === 0 ? console.log("''",true) : console.log("''",false);
+

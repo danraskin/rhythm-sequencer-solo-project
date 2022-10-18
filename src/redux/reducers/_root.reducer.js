@@ -7,6 +7,7 @@ import patterns from './patterns.reducer';
 import steps from './steps.reducer';
 import selectedKit from './selectedKit.reducer';
 import grid from './grid.reducer';
+import buffers from './buffers.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   patterns,
   steps,
   selectedKit,
-  grid
+  grid,
+  buffers
 });
 
 export default rootReducer;

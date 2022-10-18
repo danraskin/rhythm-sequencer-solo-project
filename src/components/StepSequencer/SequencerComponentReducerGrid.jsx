@@ -33,7 +33,18 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     
     const BD = require(`../../samples/${selectedKit.BD}`);
     const SD = require(`../../samples/${selectedKit.SD}`);
-    const HH = require(`../../samples/${selectedKit.HH}`); 
+    const HH = require(`../../samples/${selectedKit.HH}`);
+
+    const makeBuffers = ()=> {
+        const buffers = {
+            BD,
+            SD,
+            HH
+        }
+        dispatch({type: 'CREATE_BUFFERS', payload: buffers})
+    }
+    makeBuffers();
+
 
     const bdBuffer = new Tone.ToneAudioBuffer(BD);
     const sdBuffer = new Tone.ToneAudioBuffer(SD);
@@ -51,11 +62,11 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
     // const bpmRef = useRef(80);
     // bpmRef.current = 80;
     useEffect(()=>{
-        for (let kit of samples) {
-            if (kit.id === selectedKitId) {
-                setSelectedKit(kit);
-            }
-        }
+        // for (let kit of samples) {
+        //     if (kit.id === selectedKitId) {
+        //         setSelectedKit(kit);
+        //     }
+        // }
         console.log('useEffect drumkit', drumKit);
         makeGrid(drumKit);
 

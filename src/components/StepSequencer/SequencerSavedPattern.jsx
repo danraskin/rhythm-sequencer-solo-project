@@ -30,11 +30,11 @@ function SequencerSavedPattern() {
 
 
     const selectKit = (kit_id)=> {
+        // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
         dispatch({type: 'SET_SELECTED_KIT', payload: {kit_id, samples}})
+
         // console.log('in selectKit', selectedKit);
     }
-
-
 
     return(
         <div className="App">
