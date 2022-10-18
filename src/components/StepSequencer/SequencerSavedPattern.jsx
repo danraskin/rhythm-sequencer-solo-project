@@ -92,8 +92,7 @@ function SequencerSavedPattern() {
             SD: new Tone.Player(sdBuffer),
             HH: new Tone.Player(hhBuffer) 
         }
-        for (const drum in drumKit){drum=>drum.toDestination()};
-
+        for (const drum in drumKit){drumKit[drum].toDestination()};
 
         return drumKit;
     }
@@ -133,9 +132,8 @@ function SequencerSavedPattern() {
     
 
     const selectKit = (kit_id)=> {
-        console.log('selectedKit', drumArr)
-        Tone.start();
-        drumArr[0].start();
+        // Tone.start();
+        console.log(drumArr[0].start());
         // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
         // dispatch({type: 'SET_SELECTED_KIT', payload: {kit_id, samples}})
 

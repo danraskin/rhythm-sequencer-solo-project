@@ -10,19 +10,7 @@ import StepTracker from "./StepTracker"
 function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumArr}) {
     
     const dispatch = useDispatch();
-
     const user = useSelector(store => store.user);
-    // const selectedKitId = useSelector(store=>store.selectedKit) //NEW FOR /PATTERN
-    // const samples = useSelector(store=>store.samples);
-    // const steps = useSelector(store=>store.steps);
-    // const gridX = useSelector(store=>store.grid);
-    // const [gridX, setGridX] = useState( ()=>makeGrid(drumKit) );
-    // const [gridX, setGridX] = useState([]);
-
-
-
-    // const [ selectedKit, setSelectedKit ] = useState(samples[0]);
-
     const beatRef = useRef(0);
 
     let started = false;
@@ -31,41 +19,6 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
     Tone.Transport.bpm.value = bpm;
     console.log(grid)
     
-    //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
-    // const bpmRef = useRef(80);
-    // bpmRef.current = 80;
-    // useEffect(()=>{
-    //     // for (let kit of samples) {
-    //     //     if (kit.id === selectedKitId) {
-    //     //         setSelectedKit(kit);
-    //     //     }
-    //     // }
-    //     console.log('useEffect drumkit', drumKit);
-    //     makeGrid(drumKit);
-
-    //     // dispatch({type: 'SET_GRID', payload: makeGrid(drumKit)});
-    //     console.log(gridX);
-
-    // },[]);
- 
-    // const makeGrid = (drumKit) => {
-    //     const rows = [];   
-    //     for (const sample of drumKit) {
-    //         const row = [];
-    //         for (let i = 0; i < numSteps; i++) {
-    //             row.push({
-    //             step: i,
-    //             sample: sample,
-    //             isActive: false
-    //             });
-    //         }
-    //         rows.push(row);
-    //     };
-    //     setGridX(rows);
-    //     // return rows;
-    // };
-
-    // grid is the active object.
     
     const demoPlay = () => { 
         console.log('in demoPlay', drumArr);
@@ -79,12 +32,8 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
               }
             });
             beatRef.current = (beatRef.current + 1) % numSteps;
-            // beatRef.current = beat;
             console.log(beatRef);
-            // // return to this once i start using react hooks.
-            // setCurrentStepState(beat => {
-            //    return beat > 6 ? 0 : beat + 1;
-            // });
+
         }
         Tone.Transport.scheduleRepeat(repeat, "8n");
       };
@@ -117,11 +66,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
     }
 
     const makePatternObject = () => {
-        // console.log(grid);
-
-        //create pattern data object
         const pattern = {};
-        //store key names for pattern object
         const drumNames = ['BD','SD','HH'];
 
         for ( let row of grid ) {
