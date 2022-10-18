@@ -29,6 +29,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
     let playing = false;
     
     Tone.Transport.bpm.value = bpm;
+    console.log(grid)
     
     //what would be like to if we used useRef for BPM???? way to prevent DOM reload?
     // const bpmRef = useRef(80);
@@ -67,9 +68,9 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
     // grid is the active object.
     
     const demoPlay = () => { 
-        // console.log('gridX',gridX);
+        console.log('in demoPlay', drumArr);
 
-        const repeat = () => {
+        const repeat = (time) => {
             grid.forEach((row, index) => {
               let drum = drumArr[index];
               let note = row[beatRef.current];
@@ -161,7 +162,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, drumA
                         {row.map(step => (
                             <div
                                 key={step.step}
-                                className={`step step_${step.step} active-false`}
+                                className={`step step_${step.step} active-${step.isActive}`}
                                 id={step.step}
                                 onClick={e=>stepToggle(e,step)}
                             ></div>

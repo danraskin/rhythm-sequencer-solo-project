@@ -94,6 +94,7 @@ function SequencerSavedPattern() {
         }
         for (const drum in drumKit){drum=>drum.toDestination()};
 
+
         return drumKit;
     }
 
@@ -131,12 +132,15 @@ function SequencerSavedPattern() {
 
     
 
-    // const selectKit = (kit_id)=> {
-    //     // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
-    //     dispatch({type: 'SET_SELECTED_KIT', payload: {kit_id, samples}})
+    const selectKit = (kit_id)=> {
+        console.log('selectedKit', drumArr)
+        Tone.start();
+        drumArr[0].start();
+        // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
+        // dispatch({type: 'SET_SELECTED_KIT', payload: {kit_id, samples}})
 
-    //     // console.log('in selectKit', selectedKit);
-    // }
+        // console.log('in selectKit', selectedKit);
+    }
 
     return(
         <div className="App">
