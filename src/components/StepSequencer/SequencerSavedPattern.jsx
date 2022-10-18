@@ -14,6 +14,8 @@ function SequencerSavedPattern() {
     const params = useParams(); //NEW FOR /PATTERN/ID
     const patternId = params.id; //NEW FOR /PATTERN/ID
     const samples = useSelector(store=>store.samples);
+    
+    const [ grid, setGrid ] = useState([])
 
 
     const [ bpm, BPMslider ] = useBPM(120);
@@ -24,18 +26,20 @@ function SequencerSavedPattern() {
 
 
 
-    // useEffect( () => {
-    //     console.log('in useEffect',patternId, samples);
-    //     dispatch({type:'FETCH_PATTERN_STEPS', payload: {patternId, samples}}) //NEW FOR /PATTERN/ID      
-    // },[]);
+    useEffect( () => {
+        buildGrid(patternId);
+        console.log('in useEffect', grid, !grid[0]);
+        // console.log('in useEffect',patternId, samples);
+        // dispatch({type:'FETCH_PATTERN_STEPS', payload: {patternId, samples}}) //NEW FOR /PATTERN/ID      
+    },[]);
 
 
 
     const buildGrid = async () => {
-
-        let drumKit = [];
-        let stepsForGrid; 
-        console.log('in buildGrid', patternId)
+        
+        let grid = [];
+        let drumKit = {}
+        // console.log('in buildGrid', patternId)
 
         if (patternId) {
 
@@ -46,9 +50,15 @@ function SequencerSavedPattern() {
             const steps_total = patternData.data.steps_total;
             
             drumKit = buildDrumKit(sampless, kit_id);
-            // console.log(drumKit);
+            console.log('in buildGrid',drumKit);
+            grid = formatSteps(steps, steps_total, drumKit)
 
-            stepsForGrid = formatSteps(steps, steps_total, drumKit);
+            // grid = formatSteps(steps, steps_total, drumKit);
+            setGrid( 
+                grid
+            );
+
+            console.log('in buildGrid', grid)
 
         } else {
             // kit_id = 1;
@@ -72,23 +82,35 @@ function SequencerSavedPattern() {
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
         const hhBuffer = new Tone.ToneAudioBuffer(HH);
         
-        const drumKit = [
-            new Tone.Player(bdBuffer),
-            new Tone.Player(sdBuffer),
-            new Tone.Player(hhBuffer) 
-        ]
-        drumKit.forEach(drum => drum.toDestination());
+        const drumKit = {
+            BD: new Tone.Player(bdBuffer),
+            SD: new Tone.Player(sdBuffer),
+            HH: new Tone.Player(hhBuffer) 
+        }
+        for (const drum in drumKit){drum=>drum.toDestination()};
 
         return drumKit;
     }
 
     const formatSteps = (steps, steps_total, drumKit) => {
-        console.log('in formatSteps', steps);
-        
-
+        // console.log('in formatSteps', steps);
+        const rows = [];   
+        for (const sample in drumKit) {
+            // console.log('sample in drumKit', sample, drumKit[sample]);
+            const row = [];
+            for (let i = 0; i < steps_total; i++) {
+                row.push({
+                step: i,
+                sample: drumKit[sample],
+                isActive: steps[i][sample]
+                });
+            }
+            rows.push(row);
+        };
+        // console.log('grid in formatSteps: ',rows);
+        return rows
     }
 
-    buildGrid(patternId);
 
 
     
@@ -123,13 +145,14 @@ function SequencerSavedPattern() {
                 ))}
             </div>
 
-            {/* {!selectedKit ? null :
-            <SequencerComponentReducerGrid
-                bpm = {bpm} 
-                numSteps={numSteps}
-                patternName={patternName}
-            />
-            } */}
+            { !grid[0] ? null :
+            // <SequencerComponentReducerGrid
+            //     bpm = {bpm} 
+            //     numSteps={numSteps}
+            //     patternName={patternName}
+            // />
+            <div className="sequence_grid">should render</div>
+            }
         </div>
         
     )

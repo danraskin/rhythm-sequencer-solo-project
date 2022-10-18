@@ -151,7 +151,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName}) {
         //store key names for pattern object
         const drumNames = ['BD','SD','HH'];
 
-        for ( let row of grid ) {
+        for ( let row of gridX ) {
             const setRow = []
             for ( let step in row ) {
                 setRow.push(row[step].isActive)
