@@ -97,14 +97,14 @@ function Guts({
             // for each 
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
-//needs to know KIT. this was used to make the grid, and not stored anywhere.
-        console.log('makePatternObject', selectedKitId);
+        console.log('in makePatternObject', patternId);
         const patternData = {
             name: patternName,
             user: user.id,
             steps_total: numSteps,
             kit_id: selectedKitId,
-            pattern: pattern
+            pattern: pattern,
+            pattern_id: patternId
         }
 
         return patternData;
@@ -119,7 +119,7 @@ function Guts({
                 dispatch({type: 'EDIT_PATTERN', payload: patternData});
             }
         } else {
-            alert("Register or Login to save pattern.")
+            alert("Register or Login to save pattern.");
         }
     }
 

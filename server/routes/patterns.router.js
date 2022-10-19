@@ -2,8 +2,6 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 
-
-
 //POST new pattern
 router.post('/', async (req, res) => {
     console.log('in POST /patterns', req.body);
@@ -28,7 +26,6 @@ router.post('/', async (req, res) => {
         const patternRes = await pool.query(sqlQueryPattern, [user_id,kit_id,steps_total,name]);
         const patternId = patternRes.rows[0].id;
 
-        //could make this concurrent, but the most data is going to be.... not v much.
         for ( let i=0; i < steps_total; i ++ ) {
             //loops through an array of length equal to number of steps. sql query called for each step in sequence.
             await pool.query( sqlQuerySteps,
@@ -48,6 +45,59 @@ router.post('/', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+router.put('/:id', async (req, res) => {
+    console.log('in POST /patterns/id', req.params.id, req.body);
+    const pattern_id = req.params.id
+    const name = req.body.name;
+    const kit_id = req.body.kit_id;
+    const steps_total = req.body.steps_total; //will need to adjust if users can edit pattern length
+    const pattern = req.body.pattern;
+
+    const sqlQueryPattern = `
+        UPDATE "patterns"
+            SET
+                "kit_id" = $1,
+                "name" = $2
+            WHERE id=$3;
+        `;
+    const sqlQuerySteps = `
+        UPDATE "steps"
+            SET
+                "BD" = $1,
+                "SD" = $2,
+                "HH" = $3
+            WHERE "pattern_id" = $4 AND "step" = $5;
+        `;
+
+    try {
+   
+        await pool.query(sqlQueryPattern, [kit_id, name,pattern_id]);
+
+        for ( let i=0; i < steps_total; i ++ ) {
+            //loops through an array of length equal to number of steps. sql query called for each step in sequence.
+            await pool.query( sqlQuerySteps,
+                [
+                    pattern.BD[i],
+                    pattern.SD[i],
+                    pattern.HH[i],
+                    pattern_id,
+                    i
+                ]
+            )
+        } 
+        res.sendStatus(201);
+
+    } catch (dbErr) {
+        console.log('POST /patterns error: ', dbErr);
+        res.sendStatus(500);
+    }
+});
+
+
+
+
+
 
 router.get('/user', async (req, res) => {
     const sqlQuery = `

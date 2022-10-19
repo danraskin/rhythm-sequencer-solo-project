@@ -18,9 +18,12 @@ function* createPattern(action) {
 
 function* editPattern(action) {
     try {
-    console.log('in editPattern: ', action.payload)
-
-
+        console.log('in editPattern: ', action.payload);
+        const response = yield axios({
+            method: 'PUT',
+            url: `/api/patterns/${action.payload.pattern_id}`,
+            data: action.payload
+        });
     } catch (error) {
         console.log('error in editPattern', error);
     }
