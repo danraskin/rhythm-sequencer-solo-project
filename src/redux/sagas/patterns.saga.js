@@ -16,6 +16,16 @@ function* createPattern(action) {
     }
 }
 
+function* editPattern(action) {
+    try {
+    console.log('in editPattern: ', action.payload)
+
+
+    } catch (error) {
+        console.log('error in editPattern', error);
+    }
+}
+
 function* fetchUserPatterns(action) {
     try {
         // console.log('in fetchUserPattern: ',action.payload);
@@ -29,7 +39,8 @@ function* fetchUserPatterns(action) {
 
 function* patternsSaga() {
     yield takeLatest('CREATE_PATTERN', createPattern);
-    yield takeLatest('FETCH_USER_PATTERNS', fetchUserPatterns)
+    yield takeLatest('FETCH_USER_PATTERNS', fetchUserPatterns);
+    yield takeLatest('EDIT_PATTERN', editPattern);
   }
 
   export default patternsSaga;

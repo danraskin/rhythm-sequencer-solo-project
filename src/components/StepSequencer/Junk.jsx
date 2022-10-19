@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { useSelector,useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
 import axios from 'axios';
 
@@ -15,7 +15,7 @@ function SavedJunk() {
     const samples = useSelector(store=>store.samples);
     
     const [ gridX, setGrid ] = useState([])
-    const [ selectedKitId, setKitId ] = useState('1')
+    const [ selectedKitId, setKitId ] = useState(1)
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
@@ -29,7 +29,7 @@ function SavedJunk() {
             console.log('junk useEffect', gridX)
         }
 
-    },[patternId]);
+    },[patternId,samples]);
 
     const buildGrid = async () => {
         
@@ -65,7 +65,6 @@ function SavedJunk() {
             grid = newGrid(steps_total, drumKit) //makes grid!
             setGrid( grid );
             setKitId(kit_id);
-
         }
     }
        

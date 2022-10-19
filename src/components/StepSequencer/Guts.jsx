@@ -8,16 +8,18 @@ import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
 function Guts({
-    bpm,
-    numSteps, 
-    patternName, 
-    grid, 
-    selectedKitId,
-    playing,
-    setPlaying,
-    armed,
-    setArmed,
-}) {
+        bpm,
+        numSteps, 
+        patternName,
+        patternId, 
+        grid, 
+        selectedKitId,
+        playing,
+        setPlaying,
+        armed,
+        setArmed
+    }) {
+
     
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
@@ -31,6 +33,11 @@ function Guts({
             beatRef.current=0;
             Tone.Transport.stop()
             setPlaying(false);
+        }
+        if (patternId) {
+            console.log('guts useEffect', patternId)
+        } else {
+            console.log('guts useEffect new')
         }
         console.log('guts useEffect', grid[0][0])
 
@@ -46,7 +53,7 @@ function Guts({
         });
         beatRef.current = (beatRef.current + 1) % numSteps;
         console.log('beat',beatRef.current);
-    }
+    };
 
     const toggleSequencePlayback = (e) => {
           if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
@@ -106,7 +113,11 @@ function Guts({
     const savePattern = () => {
         if (user.id) {
             const patternData = makePatternObject();
-            dispatch({type: 'CREATE_PATTERN', payload: patternData});
+            if (!patternId) {
+                dispatch({type: 'CREATE_PATTERN', payload: patternData});
+            } else {
+                dispatch({type: 'EDIT_PATTERN', payload: patternData});
+            }
         } else {
             alert("Register or Login to save pattern.")
         }
