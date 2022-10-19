@@ -7,55 +7,68 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, selectedKitId}) {
+function Guts({
+    bpm,
+    numSteps, 
+    patternName, 
+    grid, 
+    selectedKitId,
+    playing,
+    setPlaying,
+    armed,
+    setArmed
+}) {
     
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
 
-    let started = false;
-    let playing = false;
-    
-    Tone.Transport.bpm.value = bpm;
-    console.log(grid)
-    
-    
-    const playSequencer = () => { 
-        // console.log('in demoPlay', drumArr);
+    useEffect(() => {
+        Tone.Transport.bpm.value = bpm;
+        if (!armed) {
+            beatRef.current=0;
+            Tone.Transport.stop()
+            setPlaying(false);
+        }
+        console.log('guts useEffect')
 
-        const repeat = (time) => {
-            grid.forEach((row, index) => {
-            //   let drum = drumArr[index];
+      }, [bpm])
+    
+    
+    const armSequencer = () => { 
+
+        const triggerSample = () => {
+            grid.forEach(row => {
               let note = row[beatRef.current];
               if (note.isActive) {
                 note.sample.start();
+                console.log(grid);
               }
             });
             beatRef.current = (beatRef.current + 1) % numSteps;
-            console.log(beatRef);
-
+            console.log('beat',beatRef.current);
         }
-        Tone.Transport.scheduleRepeat(repeat, "8n");
+        Tone.Transport.scheduleRepeat(triggerSample, "8n");
       };
 
-    const configPlayButton = (e) => {
-          if (!started) { //this triggers Tone.start() the FIRST TIME user clicks' start.
+    const toggleSequencePlayback = (e) => {
+          if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
+            setArmed(true);          
             Tone.start(); //whatever's happening, this isn't triggering properly.
             Tone.getDestination().volume.rampTo(-10, 0.001)
-            playSequencer();
-            started = true; //this toggles true, which prevents a second instance of Tone.start()
+            armSequencer();
           }
       
           if (playing) {
             e.target.innerText = "Play";
-            Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'playSequencer()'
+            Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'armSequencer()'
             beatRef.current=0;
-            playing = false;
+            setPlaying(false);
           } else {
             beatRef.current=0;
             e.target.innerText = "Stop";
             Tone.Transport.start();
-            playing = true;
+            setPlaying(true);
           }
       };
 
@@ -102,7 +115,7 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, selec
 
     return (
         <div className="App">
-            <button><tone-button onClick={e=>configPlayButton(e)}>Play</tone-button></button>
+            <button><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
             <section className="sequence_grid">
                 { Object.entries(grid).length === 0  ? null : grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
@@ -132,4 +145,4 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, selec
     )
 }
 
-export default SequencerComponentReducerGrid;
+export default Guts;

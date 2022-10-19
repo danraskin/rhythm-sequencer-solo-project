@@ -2,14 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useSelector,useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
 import axios from 'axios';
-
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
-import SequencerComponentReducerGrid from './SequencerComponentReducerGrid';
+import Guts from './Guts';
 
 
-function SequencerSavedPattern() {
+function NewJunk() {
+
     const dispatch = useDispatch();
     const params = useParams(); //NEW FOR /PATTERN/ID
     const patternId = params.id; //NEW FOR /PATTERN/ID
@@ -25,14 +25,16 @@ function SequencerSavedPattern() {
     // const [ drumArr, setDrumArr ] = useState([]);
 
     useEffect( () => {
-        buildGrid(patternId);
+        buildGrid();
         console.log('in useEffect', gridX);
         // console.log('in useEffect', drumArr);
-    },[]);
+    },[samples]);
 
-    const buildGrid = async () => {
+    const buildGrid = async (patternId) => {
+        console.log();
         
         const sampless=samples.samplesObj
+        
         let grid = [];
         let drumKit = {}
         // console.log('in buildGrid', patternId)
@@ -47,7 +49,7 @@ function SequencerSavedPattern() {
             const name = patternData.data.name
             setNumSteps(steps_total);
             setPatternName(name);
-            setKitId(kit_id); //for saving pattern
+            setKitId(kit_id);
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             // setDrumArr( buildDrumArr(drumKit) ); //formats drumKit for use in sequencer
@@ -58,6 +60,7 @@ function SequencerSavedPattern() {
             // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
+            console.log('in else');
             const kit_id = 1;
             const steps_total = 8;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
@@ -173,8 +176,8 @@ function SequencerSavedPattern() {
             </div>
 
             { !gridX[0] ? null :
-            <SequencerComponentReducerGrid
-                bpm = {bpm} 
+            <Guts
+                bpm = {bpm}
                 numSteps={numSteps}
                 patternName={patternName}
                 grid={gridX}
@@ -185,4 +188,5 @@ function SequencerSavedPattern() {
         
     )
 }
-export default SequencerSavedPattern;
+
+export default NewJunk;

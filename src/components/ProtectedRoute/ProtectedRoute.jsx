@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import StepSequencer from '../StepSequencer/StepSequencer';
+import StepSequencer from '../StepSequencer/NewJunk';
 import {useSelector} from 'react-redux';
 
 // A Custom Wrapper Component -- This will keep our code DRY.

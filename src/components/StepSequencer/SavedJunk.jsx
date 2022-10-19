@@ -2,39 +2,35 @@ import { useState, useEffect, useRef } from 'react';
 import { useSelector,useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
 import axios from 'axios';
+
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
-import SequencerComponentReducerGrid from './SequencerComponentReducerGrid';
+import Guts from './Guts';
 
 
-function StepSequencer() {
-
+function SavedJunk() {
     const dispatch = useDispatch();
-    const params = useParams(); //NEW FOR /PATTERN/ID
-    const patternId = params.id; //NEW FOR /PATTERN/ID
+    const params = useParams();
+    const patternId = params.id;
     const samples = useSelector(store=>store.samples);
     
     const [ gridX, setGrid ] = useState([])
-
     const [ selectedKitId, setKitId ] = useState('1')
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
-    
-    // const [ drumArr, setDrumArr ] = useState([]);
+    const [playing, setPlaying] = useState(false)
+    const [armed, setArmed] = useState(false)
 
     useEffect( () => {
-        buildGrid();
-        console.log('in useEffect', gridX);
-        // console.log('in useEffect', drumArr);
-    },[samples]);
+        buildGrid(patternId);
+        console.log('junk useEffect')
+    },[patternId]);
 
-    const buildGrid = async (patternId) => {
-        console.log();
+    const buildGrid = async () => {
         
         const sampless=samples.samplesObj
-        
         let grid = [];
         let drumKit = {}
         // console.log('in buildGrid', patternId)
@@ -49,7 +45,7 @@ function StepSequencer() {
             const name = patternData.data.name
             setNumSteps(steps_total);
             setPatternName(name);
-            setKitId(kit_id);
+            setKitId(kit_id); //for saving pattern
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             // setDrumArr( buildDrumArr(drumKit) ); //formats drumKit for use in sequencer
@@ -60,7 +56,6 @@ function StepSequencer() {
             // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
-            console.log('in else');
             const kit_id = 1;
             const steps_total = 8;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
@@ -176,113 +171,21 @@ function StepSequencer() {
             </div>
 
             { !gridX[0] ? null :
-            <SequencerComponentReducerGrid
-                bpm = {bpm}
+            <Guts
+                bpm = {bpm} 
                 numSteps={numSteps}
                 patternName={patternName}
                 grid={gridX}
                 selectedKitId={selectedKitId}
+                armed={armed}
+                setArmed={setArmed}
+                playing={playing}
+                setPlaying={setPlaying}
+                patternId={patternId}
             />
             }
         </div>
         
     )
 }
-
-
-
-//     const dispatch = useDispatch();
-
-//     //need to make a FETCH kits request in a useEffect.
-//     //fetch kits sets a reducer, which is accessed in this parent component as a menu.
-//     //ultimately, i will need a dropdown menu, a default kit setting, etc. for now, I will make sure the route works.
-
-//     const samples = useSelector(store=>store.samples);
-//     const [ bpm, BPMslider ] = useBPM(120);
-//     const [ numSteps, setNumSteps ] = useState(8);
-//     const [ selectedKit, setSelectedKit ] = useState();
-//     const [ patternName, setPatternName ] = useState('new pattern');
-
-//     useEffect( () => {
-//         dispatch({type: 'FETCH_SAMPLES'});
-//     },[]);
-
-//     const selectKit = (e)=> {
-//         console.log('target value is',e);
-//         setSelectedKit(e);
-//     }
-
-
-//     // const drumKit= [];
-//     // let grid=[];
-    
-
-// //     useEffect(
-
-// //         //might have to exploit SAGAS or REDUCERS to do this pre-loaded rendering.
-
-// //         () => {const kitBuffers = new Tone.ToneAudioBuffers({
-// //             urls: {
-// //                 BD,
-// //                 SD
-// //             },
-// //             onload: ()=> {
-// //                 console.log('in bdBuffer1 function');
-// //                 const drum1 = new Tone.Player().toDestination();
-// //                 drum1.buffer = kitBuffers.get("BD");
-// //                 const drum2 = new Tone.Player(SD).toDestination();
-// //                 drum2.buffer = kitBuffers.get("SD");
-// //                 drumKit.push(drum1,drum2);
-
-// //                 grid = makeGrid(drumKit);
-// //                 console.log('grid: ',grid);
-// //             }
-// //         })}
-// //   , []);
-
-
-
-
-// // SequencerComponent props: BPM and BPMslider are inputs from another nested component that
-// // access REACT state.
-// // grid is the "array of arrays of objects" that both renders on DOM in SequencerComponent
-// // and is called in the 'demoPlay()' to trigger samples.
-
-//     return(
-//         <div className="App">
-//             <header>
-//                 <h1>rhythm sequencer</h1>
-//             </header>
-//             <input type="text" value={patternName} placeholder="new pattern" onChange={e=>setPatternName(e.target.value)} />
-//             {BPMslider}
-//             <p>{bpm}</p>
-//             <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
-//             {/* <form >
-//                 <label>Drum kits</label>
-//                 <select>
-//                         {samples.map(kit=> (
-//                             <option key={kit.id} onClick={e=>selectKit} value={kit}>{kit.name}</option>
-//                         ))}
-//                 </select>
-//             </form> */}
-//             <div id="kit_selector">
-//                 { Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
-//                     <button key={kit.id} onClick={e=>selectKit(e.target.value)} value={kit.id}>{kit.name}</button>
-//                 ))}
-//             </div>
-
-//             {!selectedKit ? null :
-//             <SequencerComponent
-//                 bpm = {bpm} 
-//                 BPMslider={BPMslider}
-//                 selectedKit={selectedKit}
-//                 numSteps={numSteps}
-//                 patternName={patternName}
-               
-//             />
-//             }
-//         </div>
-        
-//     )
-// }
-export default StepSequencer;
+export default SavedJunk;
