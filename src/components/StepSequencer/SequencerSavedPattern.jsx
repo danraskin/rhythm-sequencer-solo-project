@@ -17,7 +17,7 @@ function SequencerSavedPattern() {
     
     const [ gridX, setGrid ] = useState([])
 
-
+    const [ selectedKitId, setKitId ] = useState('1')
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
@@ -47,6 +47,7 @@ function SequencerSavedPattern() {
             const name = patternData.data.name
             setNumSteps(steps_total);
             setPatternName(name);
+            setKitId(kit_id); //for saving pattern
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             // setDrumArr( buildDrumArr(drumKit) ); //formats drumKit for use in sequencer
@@ -62,6 +63,7 @@ function SequencerSavedPattern() {
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             grid = newGrid(steps_total, drumKit) //makes grid!
             setGrid( grid );
+            setKitId(kit_id);
 
         }
 
@@ -176,7 +178,7 @@ function SequencerSavedPattern() {
                 numSteps={numSteps}
                 patternName={patternName}
                 grid={gridX}
-                // drumArr={drumArr}
+                selectedKitId={selectedKitId}
             />
             }
         </div>

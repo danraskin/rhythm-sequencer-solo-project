@@ -7,7 +7,7 @@ import * as Tone from 'tone';
 import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
-function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid}) {
+function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid, selectedKitId}) {
     
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
@@ -79,11 +79,12 @@ function SequencerComponentReducerGrid({ bpm, numSteps, patternName, grid}) {
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
 //needs to know KIT. this was used to make the grid, and not stored anywhere.
+        console.log('makePatternObject', selectedKitId);
         const patternData = {
             name: patternName,
             user: user.id,
             steps_total: numSteps,
-            kit_id: selectedKit.id,
+            kit_id: selectedKitId,
             pattern: pattern
         }
 

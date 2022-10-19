@@ -46,8 +46,12 @@ Figuring out how to mount component with a functioning, playable GRID set to red
 
 i'm several steps away from reaching full CRUD, and figuring this out may require some *serious* digging into the component guts. want to keep making progress, but feel a need to re-evaluate my game plan. am i reworking guts iteratively? do i have a full plan? How much time should i spend making a plan?
 
-## NEXT STEP OUTLINE ##
+## CURRENT CLOCK ISSUE ##
 
-* form GRID from STEPS data. This sequencer component should mount with stored pattern.
+* working in 'SequencerComponentSavedPattern' (junk) and SequencerComponentReducerGrid (guts).
+
+- updated StepSequencer to match junk. works.
+
+- /pattern loads StepSequencer/SequencerComponentReducerGrid. can't modify STEPS or KIT to make new sample. can't save sample cuz 'kit_id' is not saved in store.
 
 * i don't know where to position the setSelectedKit
