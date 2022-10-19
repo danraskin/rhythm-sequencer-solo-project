@@ -94,7 +94,18 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id
+    const sqlQuery =`DELETE CASCADE FROM "patterns" WHERE id = $1;`;
+    try {
+        await pool.query(sqlQuery, [id]);
+        res.sendStatus(201);
+    } catch (dbErr) {
+        console.log('DELETE /patterns/id error: ', dbErr);
+        res.sendStatus(500);
+    }
 
+});
 
 
 
@@ -107,7 +118,7 @@ router.get('/user', async (req, res) => {
         const patternsRes = await pool.query(sqlQuery,[req.user.id])
         res.send(patternsRes.rows);
     } catch (dbErr) {
-        console.log('GET /patterns/user');
+        console.log('GET /patterns/user error');
         res.sendStatus(500);
     }
 });

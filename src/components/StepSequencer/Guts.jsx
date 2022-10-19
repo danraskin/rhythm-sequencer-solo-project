@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import * as Tone from 'tone';
 
@@ -20,7 +21,7 @@ function Guts({
         setArmed
     }) {
 
-    
+    const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
@@ -123,6 +124,11 @@ function Guts({
         }
     }
 
+    const deletePattern = () => {
+        dispatch({type: 'DELETE_PATTERN', payload: patternId})
+        history.push('/pattern');
+    }
+
     return (
         <div className="App">
             <button><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
@@ -146,11 +152,11 @@ function Guts({
                         step={step}
                         beat={beatRef.current}
                     />
-                    
         ))}
                 </div>
             </section>
             <button onClick={()=>savePattern()}>Save pattern</button>
+            { !patternId ? null : <button onClick={()=>deletePattern()}>Delete pattern</button>}
         </div>
     )
 }

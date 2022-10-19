@@ -18,7 +18,7 @@ function* createPattern(action) {
 
 function* editPattern(action) {
     try {
-        console.log('in editPattern: ', action.payload);
+        // console.log('in editPattern: ', action.payload);
         const response = yield axios({
             method: 'PUT',
             url: `/api/patterns/${action.payload.pattern_id}`,
@@ -26,6 +26,15 @@ function* editPattern(action) {
         });
     } catch (error) {
         console.log('error in editPattern', error);
+    }
+}
+
+function* deletePattern(action) {
+    try {
+        // console.log('in deletePattern: ', action.payload);
+        const response = yield axios.delete(`/api/patterns/${action.payload}`);
+    } catch (error) {
+        console.log('error in deletePattern', error);
     }
 }
 
@@ -44,6 +53,7 @@ function* patternsSaga() {
     yield takeLatest('CREATE_PATTERN', createPattern);
     yield takeLatest('FETCH_USER_PATTERNS', fetchUserPatterns);
     yield takeLatest('EDIT_PATTERN', editPattern);
+    yield takeLatest('DELETE_PATTERN', deletePattern)
   }
 
   export default patternsSaga;
