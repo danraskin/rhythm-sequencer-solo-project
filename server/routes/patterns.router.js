@@ -96,7 +96,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     const id = req.params.id
-    const sqlQuery =`DELETE CASCADE FROM "patterns" WHERE id = $1;`;
+    const sqlQuery =`DELETE FROM "patterns" WHERE id = $1;`;
     try {
         await pool.query(sqlQuery, [id]);
         res.sendStatus(201);
