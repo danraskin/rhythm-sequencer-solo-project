@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import StepSequencer from '../StepSequencer/NewJunk';
+import Junk from '../StepSequencer/Junk';
 import {useSelector} from 'react-redux';
 
 // A Custom Wrapper Component -- This will keep our code DRY.
@@ -32,7 +32,7 @@ function ProtectedRoute({ component, children, ...props }) {
         <ProtectedComponent />
         :
         // Otherwise, redirect to the Loginpage
-        <StepSequencer />
+        <Redirect to="/pattern" />
       }
     </Route>
 

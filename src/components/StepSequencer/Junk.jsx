@@ -10,7 +10,6 @@ import Guts from './Guts';
 
 
 function SavedJunk() {
-    const dispatch = useDispatch();
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
@@ -20,12 +19,16 @@ function SavedJunk() {
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
-    const [playing, setPlaying] = useState(false)
-    const [armed, setArmed] = useState(false)
+    const [ playing, setPlaying ] = useState(false)
+    const [ armed, setArmed ] = useState(false)
 
     useEffect( () => {
+        
         buildGrid(patternId);
-        console.log('junk useEffect')
+        if (!gridX[0]){
+            console.log('junk useEffect', gridX)
+        }
+
     },[patternId]);
 
     const buildGrid = async () => {
@@ -33,7 +36,7 @@ function SavedJunk() {
         const sampless=samples.samplesObj
         let grid = [];
         let drumKit = {}
-        // console.log('in buildGrid', patternId)
+        console.log('in buildGrid', patternId)
 
         if (patternId) {
 
@@ -48,11 +51,11 @@ function SavedJunk() {
             setKitId(kit_id); //for saving pattern
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
-            // setDrumArr( buildDrumArr(drumKit) ); //formats drumKit for use in sequencer
             // console.log('in buildGrid',drumKit);
 
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
             setGrid( grid );
+
             // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
@@ -64,11 +67,6 @@ function SavedJunk() {
             setKitId(kit_id);
 
         }
-
-        //FORMATS STEPS for GRID
-
-        //MAKES GRID
-
     }
        
     const buildDrumKit = (sampless, kit_id) => {
@@ -86,20 +84,8 @@ function SavedJunk() {
             HH: new Tone.Player(hhBuffer) 
         }
         for (const drum in drumKit){drumKit[drum].toDestination()};
-
         return drumKit;
     }
-
-    // const buildDrumArr = (drumKit) => {
-    //     //re-sets drumKit to array form for sequencer playback
-    //     const drumArr = []
-    //     for ( const drum in drumKit) {
-    //         drumArr.push(drumKit[drum]);
-    //         // console.log('in setDrumKitArray', drumKit[drum]);
-    //     }
-    //     return drumArr;
-    // }
-    
 
     const formatSteps = (steps, steps_total, drumKit) => {
         // console.log('in formatSteps', steps);
@@ -169,7 +155,7 @@ function SavedJunk() {
                     <button key={kit.id} onClick={e=>selectKit(e.target.value)} value={kit.id}>{kit.name}</button>
                 ))}
             </div>
-
+            
             { !gridX[0] ? null :
             <Guts
                 bpm = {bpm} 

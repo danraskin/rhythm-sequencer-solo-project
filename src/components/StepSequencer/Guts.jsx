@@ -16,47 +16,46 @@ function Guts({
     playing,
     setPlaying,
     armed,
-    setArmed
+    setArmed,
 }) {
     
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
 
+
     useEffect(() => {
         Tone.Transport.bpm.value = bpm;
         if (!armed) {
+            console.log('in if !armed', grid[0][0])
             beatRef.current=0;
             Tone.Transport.stop()
             setPlaying(false);
         }
-        console.log('guts useEffect')
+        console.log('guts useEffect', grid[0][0])
 
       }, [bpm])
-    
-    
-    const armSequencer = () => { 
 
-        const triggerSample = () => {
-            grid.forEach(row => {
-              let note = row[beatRef.current];
-              if (note.isActive) {
-                note.sample.start();
-                console.log(grid);
-              }
-            });
-            beatRef.current = (beatRef.current + 1) % numSteps;
-            console.log('beat',beatRef.current);
-        }
-        Tone.Transport.scheduleRepeat(triggerSample, "8n");
-      };
+      const triggerSample = () => {
+        grid.forEach(row => {
+          let note = row[beatRef.current];
+          if (note.isActive) {
+            note.sample.start();
+            console.log(grid); // how is GRID doubled???
+          }
+        });
+        beatRef.current = (beatRef.current + 1) % numSteps;
+        console.log('beat',beatRef.current);
+    }
 
     const toggleSequencePlayback = (e) => {
           if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
             setArmed(true);          
             Tone.start(); //whatever's happening, this isn't triggering properly.
             Tone.getDestination().volume.rampTo(-10, 0.001)
-            armSequencer();
+            Tone.Transport.scheduleRepeat(triggerSample, "8n");
+            console.log('in toggleSequencePayer, setArm')
+            // armSequencer();
           }
       
           if (playing) {

@@ -13,9 +13,7 @@ import Footer from '../Footer/Footer';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
-import NewJunk from '../StepSequencer/NewJunk';
-import SavedJunk from '../StepSequencer/SavedJunk';
-
+import Junk from '../StepSequencer/Junk';
 
 import AboutPage from '../AboutPage/AboutPage';
 import UserPage from '../UserPage/UserPage';
@@ -82,14 +80,14 @@ function App() {
             exact
             path="/pattern"
           >
-            <NewJunk />
+            <Junk />
           </Route>
 
           <ProtectedRoute
             exact
             path="/pattern/:id"
           >
-            <SavedJunk />
+            <Junk />
           </ProtectedRoute>
 
           <Route>
