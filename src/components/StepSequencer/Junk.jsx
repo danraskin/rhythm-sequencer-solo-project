@@ -23,12 +23,11 @@ function SavedJunk() {
     const [ armed, setArmed ] = useState(false)
 
     useEffect( () => {
-        
+        // setGrid([]);
         buildGrid(patternId);
         if (!gridX[0]){
             console.log('junk useEffect', gridX)
         }
-
     },[patternId,samples]);
 
     const buildGrid = async () => {

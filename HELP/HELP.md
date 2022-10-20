@@ -1,57 +1,11 @@
+Script getting doubled.
 
-I am struggling to re-work my sequencer so that the 'grid' is stored in REDUX state.
+When I resume "play" after refreshig page, the audio playback refers to both current and *all* previous instances of data stored somehwere in memory. Things can get extremely weird, and so isolating behavior is challenging.
 
-terms:
-*STEP DATA*: saved pattern data. needs to be re-formatted for C *RU* D. 
-[
-    {id: 1, pattern_id: 1, step: 0, BD: true, SD: false, HH: true},
-    {id: 2, pattern_id: 1, step: 2, BD: false, SD: false, HH: false},
-    ...
-]
+Here is a simplistic illustration of of what is going on in console logs. I re-wrote the console logs in guts.jsx in between each page load (all logging at guts.jsx:58)
 
-*GRID*: this is the *active* object that responds to user input and is referenced to trigger sample playback.
+![first page load](./help1.png)
 
-[
-    [{...},{...},{..}} ...],
-    [{...},{...},{...} ...],
-    [{...},{...},{...} ...]
-]
+![second and subsequent third page load. data from first page load got cleared somehow.](./help2.png)
 
-where {...} = {step: 0, isActive: true, sample: PLAYER}
-
-*PLAYER* this is a tone.js object. it contains information about the sample/buffer, and is object that tone.js triggers/plays. I think the creation of a PLAYER using buffers (another tone.js object is asynchronous)
-
-*DRUMKIT* drumKit is an an array of PLAYERS.
-
-[ BDplayer, SDplayer, HHplayer] 
-
-drumKit is currently defined and created in the component, and references 'selectedKit,' which is an object in redux state containing sample URLS.
-
-![object definition and useEffect](./help2.png)
-
-
-CURRENT PROBLEMS:
-
-I want to create a dispatch a new grid to redux state on DOM load.
-
-I dispatch a new grid ( makeGrid(drumKit) ) to the reducer in useEffect (see above image).
-
-The prerequisites for a playable grid is DRUMKIT with players. however, the grid that is defined in my useEffect does not contain 'Players,' it contains function definitions.
-
-![console shows grid object details, { ...sample: f}](./help.png)
-
-should be { ...sample: Player}
-
-Figuring out how to mount component with a functioning, playable GRID set to redux state is the first step in loading saved patterns.
-
-i'm several steps away from reaching full CRUD, and figuring this out may require some *serious* digging into the component guts. want to keep making progress, but feel a need to re-evaluate my game plan. am i reworking guts iteratively? do i have a full plan? How much time should i spend making a plan?
-
-## CURRENT CLOCK ISSUE ##
-
-* working in 'SequencerComponentSavedPattern' (junk) and SequencerComponentReducerGrid (guts).
-
-- updated StepSequencer to match junk. works.
-
-- /pattern loads StepSequencer/SequencerComponentReducerGrid. can't modify STEPS or KIT to make new sample. can't save sample cuz 'kit_id' is not saved in store.
-
-* i don't know where to position the setSelectedKit
+I believe this has to do with how audio contexts(?) are stacking. I am looking into both Tone and web AudioContext API for ways to close out contexts, but it's tricky!
