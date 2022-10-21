@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LogOutButton from '../LogOutButton/LogOutButton';
-import {useSelector} from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 function UserPage() {
-  // this component doesn't do much to start, just renders some user reducer info to the DOM
-  const user = useSelector((store) => store.user);
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const user = useSelector(store => store.user);
+  const patterns = useSelector(store => store.patterns) 
+
+  useEffect(()=>{
+    dispatch({type: 'FETCH_USER_PATTERNS'});
+  },[]);
+
   return (
     <div className="container">
-      <h2>Welcome, {user.username}!</h2>
-      <p>Your ID is: {user.id}</p>
+      <h2>User: {user.username}</h2>
+      {patterns.map(pattern => (
+        <div key={pattern.id}>
+          <button onClick={()=>history.push(`/pattern/${pattern.id}`)}>{pattern.name}</button>
+        </div>
+      ))}
       <LogOutButton className="btn" />
     </div>
   );

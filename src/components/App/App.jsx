@@ -13,12 +13,10 @@ import Footer from '../Footer/Footer';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
-import StepSequencer from '../StepSequencer/StepSequencer';
+import Junk from '../StepSequencer/Junk';
 
 import AboutPage from '../AboutPage/AboutPage';
 import UserPage from '../UserPage/UserPage';
-import InfoPage from '../InfoPage/InfoPage';
-import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 
@@ -27,9 +25,12 @@ import './App.css';
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(store => store.user);
+  // const [ armed, setArmed ] = useState(false);
 
   useEffect(() => {
     dispatch({ type: 'FETCH_USER' });
+    dispatch({type: 'FETCH_SAMPLES'});
+
   }, [dispatch]);
   
   return (
@@ -37,7 +38,7 @@ function App() {
       <div>
         <Nav />
         <Switch>
-          <Redirect exact from="/" to="/home" />
+          <Redirect exact from="/" to="/pattern" />
           <Route
             exact
             path="/about"
@@ -46,7 +47,6 @@ function App() {
           </Route>
 
         <ProtectedRoute
-          // logged in shows UserPage else shows LoginPage
           exact
           path="/user"
         >
@@ -79,10 +79,23 @@ function App() {
 
           <Route
             exact
-            path="/home"
+            path="/pattern"
           >
-            <StepSequencer />
+            <Junk 
+              // armed={armed}
+              // setArmed={setArmed}
+            />
           </Route>
+
+          <ProtectedRoute
+            exact
+            path="/pattern/:id"
+          >
+            <Junk 
+              // armed={armed}
+              // setArmed={setArmed}
+            />
+          </ProtectedRoute>
 
           <Route>
             <h1>404</h1>

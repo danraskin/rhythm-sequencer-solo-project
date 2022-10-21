@@ -1,11 +1,11 @@
-const samples = (state = {}, action) => {
+const steps = (state = [], action) => {
     switch (action.type) {
-      case 'SET_SAMPLES':
+      case 'SET_PATTERN_STEPS':
         return action.payload;
       default:
         return state;
     }
   };
-
-  export default samples;
+  
+  export default steps;
   
