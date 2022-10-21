@@ -9,7 +9,7 @@ import useBPM from "./useBPM"
 import Guts from './Guts';
 
 
-function SavedJunk() {
+function Junk() {
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
@@ -64,7 +64,7 @@ function SavedJunk() {
 
         } else { //this will be for new sample
             const kit_id = 1;
-            const steps_total = 8;
+            const steps_total = numSteps;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             setDrumKitX(drumKit);
             grid = newGrid(steps_total, drumKit) //makes grid!
@@ -178,4 +178,4 @@ function SavedJunk() {
         
     )
 }
-export default SavedJunk;
+export default Junk;
