@@ -58,23 +58,23 @@ function Guts({
     };
 
     const toggleSequencePlayback = async (e) => {
-        let repeater;
-        if (!armed) {
+        let repeater; //unique event ID;
+        if (!armed) { //ARMED toggle prevents multiple instances of Tone.start()
             setArmed(true);  
             await Tone.start();
           }
       
-          if (playing) {
+          if (playing) { //if clock is already running
             e.target.innerText = "Play";
-            Tone.Transport.cancel(repeater);
-            Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'armSequencer()'
-            setPlaying(false);
+            Tone.Transport.cancel(repeater);//cancles repeated triggerSample() event;
+            Tone.Transport.stop(); //stops clock
+            setPlaying(false); 
           } else {
             e.target.innerText = "Stop";
-            beatRef.current=0;
-            const repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n");
+            beatRef.current=0; // resets beat
+            repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n"); //schedules repeated triggerSample() event;
             // console.log('in toggleSequencePayer',repeater)
-            Tone.Transport.start();
+            Tone.Transport.start(); //starts clock
             setPlaying(true);
           }
       };
@@ -83,7 +83,6 @@ function Guts({
         step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
         console.log(step.isActive,e.target);
-        // console.log(grid)
     }
 
     const makePatternObject = () => {
@@ -146,13 +145,19 @@ function Guts({
                     </div>
                 ))}
                 <div className="row row_track">
-                { Object.entries(grid).length === 0 ? null : grid[0].map(step => (
-                    <StepTracker
-                        key={step.step}
-                        step={step}
-                        beat={beatRef.current}
-                    />
-        ))}
+                    { Object.entries(grid).length === 0 ? null : grid[0].map(step => (
+                        beatRef.current === step.step ?
+                            <StepTracker
+                                key={step.step}
+                                step={step}
+                                isActive={true}
+                            /> :
+                            <StepTracker
+                                key={step.step}
+                                step={step}
+                                isActive={false}
+                            />
+                    ))}
                 </div>
             </section>
             <button onClick={()=>savePattern()}>Save pattern</button>

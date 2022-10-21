@@ -32,7 +32,6 @@ function Junk(
         return () => {
             // console.log('junk useEffect dismount',appContext.state);
             Tone.Transport.stop();
-            // appContext.close();
             // console.log('junk useEffect dismount post dispose',appContext.state);
         }
     },[patternId,samples,numSteps]);
@@ -101,10 +100,8 @@ function Junk(
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
-                console.log(steps[i]);
                 row.push({
                 step: i,
-                // sample: drumKit[sample],
                 isActive: steps[i][sample]
                 });
             }
@@ -122,19 +119,19 @@ function Junk(
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                // sample: drumKit[sample],
                 isActive: false
                 });
             }
             rows.push(row);
         };
-        console.log('grid in newGrid: ',rows);
+        // console.log('grid in newGrid: ',rows);
         return rows
     }
 
-    const selectKit = (kit_id)=> {
-       const drumKit = buildDrumKit(samples.samplesObj, kit_id)
+    const selectKit = (kit_id)=> { // this needs work.
+        const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
+        
     
     }
 

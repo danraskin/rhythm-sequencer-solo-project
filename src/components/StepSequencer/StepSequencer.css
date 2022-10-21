@@ -25,15 +25,15 @@
 }
 
 .active-true {
-    background-color:rgb(23, 45, 185);
+    background-color:rgb(23, 166, 185);
 }
 .active-false {
-    background-color:rgb(136, 129, 129);
+    background-color:rgb(187, 126, 126);
 }
 
 .track_active-true {
     background-color:rgb(222, 71, 71);
 }
 .track_active-false {
-    background-color:rgb(228, 163, 163);
+    background-color:rgb(255, 255, 255);
 }
