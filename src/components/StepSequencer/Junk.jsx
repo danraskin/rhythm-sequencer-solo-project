@@ -58,7 +58,7 @@ function SavedJunk(
 
             // console.log('junk useEffect dismount post dispose',appContext.state);
         }
-    },[patternId,samples]);
+    },[patternId,samples,numSteps]);
 
     const buildGrid = async () => {
 
@@ -90,7 +90,7 @@ function SavedJunk(
 
         } else { //this will be for new sample
             const kit_id = 1;
-            const steps_total = 8;
+            const steps_total = numSteps;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             setDrumKitX(drumKit);
             grid = newGrid(steps_total) //makes grid!
@@ -160,6 +160,10 @@ function SavedJunk(
     }
 
     const selectKit = (kit_id)=> {
+        setKitId(kit_id);
+        const drumKit = buildDrumKit(samples.samplesObj, kit_id)
+        setDrumKitX(drumKit);
+
         // Tone.start();
         // console.log(drumArr[0].start());
         // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
