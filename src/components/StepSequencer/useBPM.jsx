@@ -7,7 +7,7 @@ function BPMsetter(initialBPM) {
         bpm,
         <input
         type="range"
-        min="1" max="240"
+        min="10" max="350"
         width="100px"
         value={bpm}
         onChange={e=>setBPM(e.target.value)}

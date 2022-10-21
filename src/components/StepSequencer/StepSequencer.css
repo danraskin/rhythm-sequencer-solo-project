@@ -3,13 +3,6 @@
     text-align: center;
 }
 
-.sequence_grid {
-    
-    /* display: grid; */
-    /* grid-template-columns: [col1] 50px [col2] 50px 50px 50px 50px 50px 50px 50px;
-    grid-template-rows: [row1] 50px; */
-}
-
 .row {
     display: flex;
     flex-direction:row;
@@ -32,10 +25,10 @@
 }
 
 .active-true {
-    background-color:blue;
+    background-color:rgb(23, 45, 185);
 }
 .active-false {
-    background-color:grey;
+    background-color:rgb(136, 129, 129);
 }
 
 .track_active-true {

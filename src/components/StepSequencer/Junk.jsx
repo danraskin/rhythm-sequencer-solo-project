@@ -9,7 +9,9 @@ import useBPM from "./useBPM"
 import Guts from './Guts';
 
 
-function Junk() {
+function Junk(
+    // {armed,setArmed}
+    ) {
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);

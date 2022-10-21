@@ -31,11 +31,8 @@ function Guts({
     useEffect(() => {
         Tone.Transport.bpm.value = bpm;
         console.log('armed',armed);
-        console.log('drumKit', drumKit)
-        if (!armed) {
-            console.log('in if !armed', grid[0][0])
-            // setPlaying(false);
-        }
+        // console.log('drumKit', drumKit)
+
         console.log('guts useEffect', grid[0][0])
         
         return () => {
@@ -61,22 +58,22 @@ function Guts({
     };
 
     const toggleSequencePlayback = async (e) => {
-        if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
+        let repeater;
+        if (!armed) {
             setArmed(true);  
-            await Tone.start(); //whatever's happening, this isn't triggering properly.
-            Tone.Transport.scheduleRepeat(triggerSample, "8n");
-            console.log('in toggleSequencePayer, setArm')
-            // armSequencer();
+            await Tone.start();
           }
       
           if (playing) {
             e.target.innerText = "Play";
-            // beatRef.current=0;
+            Tone.Transport.cancel(repeater);
             Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'armSequencer()'
             setPlaying(false);
           } else {
             e.target.innerText = "Stop";
             beatRef.current=0;
+            const repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n");
+            // console.log('in toggleSequencePayer',repeater)
             Tone.Transport.start();
             setPlaying(true);
           }
