@@ -16,6 +16,7 @@ const router = express.Router();
 // });
 
 router.get('/:id', async (req, res) => {
+    console.log('in GET steps/id');
     const patternId = req.params.id;
     const sqlQueryKitId = `SELECT "kit_id", "steps_total", "name" from "patterns" where id = $1;`;
     // const sqlQueryKit = `SELECT * from "sample_kits" where id = $1;`;

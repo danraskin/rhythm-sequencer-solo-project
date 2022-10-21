@@ -15,32 +15,37 @@ function SavedJunk() {
     const samples = useSelector(store=>store.samples);
     
     const [ gridX, setGrid ] = useState([])
+    const [ drumKitX, setDrumKitX ] = useState([])
+
     const [ selectedKitId, setKitId ] = useState(1)
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
-    const [ playing, setPlaying ] = useState(false)
-    const [ armed, setArmed ] = useState(false)
+    const [ playing, setPlaying ] = useState(false);
+    const [ armed, setArmed ] = useState(false);
 
     useEffect( () => {
         // setGrid([]);
         buildGrid(patternId);
-        if (!gridX[0]){
-            console.log('junk useEffect', gridX)
+        return () => {
+            // console.log('junk useEffect dismount',appContext.state);
+            Tone.Transport.stop();
+            // appContext.close();
+            // console.log('junk useEffect dismount post dispose',appContext.state);
         }
-    },[patternId,samples]);
+    },[patternId,samples,numSteps]);
 
     const buildGrid = async () => {
         
         const sampless=samples.samplesObj
         let grid = [];
-        let drumKit = {}
+        let drumKit = []
         console.log('in buildGrid', patternId)
 
         if (patternId) {
-
+            console.log('in buildGrid, patternId = true')
             const patternData = await axios.get(`api/steps/${patternId}`);
-            // console.log(patternData.data);
+            console.log(patternData.data);
             const kit_id = patternData.data.kit_id;
             const steps = patternData.data.grid;
             const steps_total = patternData.data.steps_total;
@@ -51,19 +56,20 @@ function SavedJunk() {
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             // console.log('in buildGrid',drumKit);
-
+            setDrumKitX(drumKit);
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
             setGrid( grid );
 
-            // console.log('in buildGrid', grid)
+            console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
             const kit_id = 1;
             const steps_total = 8;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
+            setDrumKitX(drumKit);
             grid = newGrid(steps_total, drumKit) //makes grid!
             setGrid( grid );
-            setKitId(kit_id);
+            // setKitId(kit_id);
         }
     }
        
@@ -76,59 +82,58 @@ function SavedJunk() {
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
         const hhBuffer = new Tone.ToneAudioBuffer(HH);
         
-        const drumKit = {
-            BD: new Tone.Player(bdBuffer),
-            SD: new Tone.Player(sdBuffer),
-            HH: new Tone.Player(hhBuffer) 
-        }
-        for (const drum in drumKit){drumKit[drum].toDestination()};
+        const drumKit = [
+            new Tone.Player(bdBuffer),
+            new Tone.Player(sdBuffer),
+            new Tone.Player(hhBuffer) 
+    ]
+        for (const drum of drumKit){drum.toDestination()};
         return drumKit;
     }
 
-    const formatSteps = (steps, steps_total, drumKit) => {
+    const formatSteps = (steps, steps_total) => {
         // console.log('in formatSteps', steps);
-        const rows = [];   
-        for (const sample in drumKit) {
+        const rows = []; 
+        const drumKit = ['BD','SD','HH'];  
+        for (const sample of drumKit) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
+                console.log(steps[i]);
                 row.push({
                 step: i,
-                sample: drumKit[sample],
+                // sample: drumKit[sample],
                 isActive: steps[i][sample]
                 });
             }
             rows.push(row);
         };
-        // console.log('grid in formatSteps: ',rows);
+        console.log('grid in formatSteps: ',rows);
         return rows
     }
 
-    const newGrid = (steps_total, drumKit) => {
-        const rows = [];   
-        for (const sample in drumKit) {
+    const newGrid = (steps_total) => {
+        const rows = [];  
+        for (let j = 0; j < 3; j++) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                sample: drumKit[sample],
+                // sample: drumKit[sample],
                 isActive: false
                 });
             }
             rows.push(row);
         };
-        // console.log('grid in formatSteps: ',rows);
+        console.log('grid in newGrid: ',rows);
         return rows
     }
 
     const selectKit = (kit_id)=> {
-        // Tone.start();
-        // console.log(drumArr[0].start());
-        // dispatch({type: 'SELECT_KIT', payload: {kit_id, samples}})
-        // dispatch({type: 'SET_SELECTED_KIT', payload: {kit_id, samples}})
-
-        // console.log('in selectKit', selectedKit);
+       const drumKit = buildDrumKit(samples.samplesObj, kit_id)
+        setDrumKitX(drumKit);
+    
     }
 
     return(
@@ -156,6 +161,7 @@ function SavedJunk() {
             
             { !gridX[0] ? null :
             <Guts
+                drumKit={drumKitX}
                 bpm = {bpm} 
                 numSteps={numSteps}
                 patternName={patternName}

@@ -9,16 +9,17 @@ import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
 function Guts({
+        drumKit,
         bpm,
         numSteps, 
-        patternName,
-        patternId, 
+        patternName, 
         grid, 
         selectedKitId,
         playing,
         setPlaying,
         armed,
-        setArmed
+        setArmed,
+        patternId
     }) {
 
     const history = useHistory();
@@ -28,55 +29,55 @@ function Guts({
 
 
     useEffect(() => {
-
-
         Tone.Transport.bpm.value = bpm;
+        console.log('armed',armed);
+        console.log('drumKit', drumKit)
         if (!armed) {
             console.log('in if !armed', grid[0][0])
-            Tone.Transport.stop()
-            setPlaying(false);
-            beatRef.current=0;
-        }
-        if (patternId) {
-            console.log('guts useEffect', patternId)
-        } else {
-            console.log('guts useEffect new')
+            // setPlaying(false);
         }
         console.log('guts useEffect', grid[0][0])
+        
+        return () => {
+            // Tone.Transport.stop();
+
+            beatRef.current=0;
+            console.log('guts useEffect stopping');
+        }
       }, [bpm])
 
     const triggerSample = () => {
         grid.forEach(row => {
-          let note = row[beatRef.current];
-          if (note.isActive) {
-            note.sample.start();
-            console.log(grid); // how is GRID doubled???
-            // console.log('armed?',Tone.getContext().state);
-          }
-        });
-        beatRef.current = (beatRef.current + 1) % numSteps;
-        console.log('beat on FOURTH instance',beatRef.current);
+            let note = row[beatRef.current];
+            if (note.isActive) {
+              const drum = grid.indexOf(row);
+              console.log(drumKit[drum]);
+              drumKit[drum].start();
+              console.log(grid); // how is GRID doubled???
+            }
+          });
+          beatRef.current = (beatRef.current + 1) % numSteps;
+          console.log('beat',beatRef.current);
     };
 
-    const toggleSequencePlayback = (e) => {
-          if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
-            setArmed(true);          
-            Tone.start();
-            Tone.getDestination().volume.rampTo(-10, 0.001)
+    const toggleSequencePlayback = async (e) => {
+        if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
+            setArmed(true);  
+            await Tone.start(); //whatever's happening, this isn't triggering properly.
             Tone.Transport.scheduleRepeat(triggerSample, "8n");
+            console.log('in toggleSequencePayer, setArm')
+            // armSequencer();
           }
       
           if (playing) {
             e.target.innerText = "Play";
+            // beatRef.current=0;
             Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'armSequencer()'
-            beatRef.current=0;
             setPlaying(false);
-            // Tone.context.close();
           } else {
-            Tone.start();
-            Tone.Transport.start();
-            beatRef.current=0;
             e.target.innerText = "Stop";
+            beatRef.current=0;
+            Tone.Transport.start();
             setPlaying(true);
           }
       };
