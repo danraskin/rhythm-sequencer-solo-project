@@ -17,22 +17,25 @@ function SavedJunk(
     const samples = useSelector(store=>store.samples);
     
     const [ gridX, setGrid ] = useState([])
+    const [ drumKitX, setDrumKitX ] = useState([])
+
     const [ selectedKitId, setKitId ] = useState(1)
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
     const [ playing, setPlaying ] = useState(false);
     const [ armed, setArmed ] = useState(false);
-    const appContext = new AudioContext();
-    Tone.setContext(appContext);
+    // const appContext = new AudioContext();
+    const appContext = null;
+    // Tone.setContext(appContext);
 
     useEffect( () => {
 
         // console.log('junk useEffect context',Tone.context);
-        console.log('compare contexts',Tone.context===Tone.context);
-        console.log('compare contexts',Tone.context===appContext);
+        // console.log('compare contexts',Tone.context===Tone.context);
+        // console.log('compare contexts',Tone.context===appContext);
         // appContextToKill.close();
-        console.log('junk useEffect mount', appContext.state);
+        // console.log('junk useEffect mount', appContext.state);
 
         // Tone.setContext(new AudioContext());
 
@@ -48,12 +51,12 @@ function SavedJunk(
         buildGrid(patternId);
   
         return () => {
-            console.log('junk useEffect dismount',appContext.state);
+            // console.log('junk useEffect dismount',appContext.state);
 
             Tone.Transport.stop();
-            appContext.close();
+            // appContext.close();
 
-            console.log('junk useEffect dismount post dispose',appContext.state);
+            // console.log('junk useEffect dismount post dispose',appContext.state);
         }
     },[patternId,samples]);
 
@@ -78,8 +81,8 @@ function SavedJunk(
             
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             // console.log('in buildGrid',drumKit);
-
-            grid = formatSteps(steps, steps_total, drumKit) //makes grid!
+            setDrumKitX(drumKit);
+            grid = formatSteps(steps, steps_total) //makes grid!
             
             setGrid( grid );
 
@@ -89,7 +92,8 @@ function SavedJunk(
             const kit_id = 1;
             const steps_total = 8;
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
-            grid = newGrid(steps_total, drumKit) //makes grid!
+            setDrumKitX(drumKit);
+            grid = newGrid(steps_total) //makes grid!
             setGrid( grid );
             // setKitId(kit_id);
         }
@@ -104,25 +108,28 @@ function SavedJunk(
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
         const hhBuffer = new Tone.ToneAudioBuffer(HH);
         
-        const drumKit = {
-            BD: new Tone.Player(bdBuffer),
-            SD: new Tone.Player(sdBuffer),
-            HH: new Tone.Player(hhBuffer) 
-        }
-        for (const drum in drumKit){drumKit[drum].toDestination()};
+        const drumKit = [
+            new Tone.Player(bdBuffer),
+            new Tone.Player(sdBuffer),
+            new Tone.Player(hhBuffer) 
+        ]
+        for (const drum of drumKit){drum.toDestination()};
+        console.log('buildDrumKit', drumKit);
         return drumKit;
     }
 
-    const formatSteps = (steps, steps_total, drumKit) => {
+
+    const formatSteps = (steps, steps_total) => {
         // console.log('in formatSteps', steps);
         const rows = [];   
-        for (const sample in drumKit) {
+        const drumKit = ['BD','SD','HH'];
+        for (const sample of drumKit) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                sample: drumKit[sample],
+                // sample: drumKit[sample],
                 isActive: steps[i][sample]
                 });
             }
@@ -132,21 +139,23 @@ function SavedJunk(
         return rows
     }
 
-    const newGrid = (steps_total, drumKit) => {
+    const newGrid = (steps_total) => {
         const rows = [];   
+        const drumKit = ['BD','SD','HH']
+
         for (const sample in drumKit) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                sample: drumKit[sample],
+                // sample: drumKit[sample],
                 isActive: false
                 });
             }
             rows.push(row);
         };
-        // console.log('grid in formatSteps: ',rows);
+        console.log('grid in formatSteps: ',rows);
         return rows
     }
 
@@ -184,6 +193,7 @@ function SavedJunk(
             
             { !gridX[0] ? null :
             <Guts
+                drumKit={drumKitX}
                 appContext={appContext}
                 bpm = {bpm} 
                 numSteps={numSteps}

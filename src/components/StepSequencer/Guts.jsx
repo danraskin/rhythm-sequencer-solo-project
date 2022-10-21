@@ -1,3 +1,4 @@
+import { RowDescriptionMessage } from 'pg-protocol/dist/messages';
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,6 +9,7 @@ import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
 function Guts({
+    drumKit,
     appContext,
     bpm,
     numSteps, 
@@ -28,6 +30,7 @@ function Guts({
     useEffect(() => {
         Tone.Transport.bpm.value = bpm;
         console.log('armed',armed);
+        console.log('drumKit', drumKit)
         if (!armed) {
             console.log('in if !armed', grid[0][0])
             // setPlaying(false);
@@ -47,7 +50,9 @@ function Guts({
         grid.forEach(row => {
           let note = row[beatRef.current];
           if (note.isActive) {
-            note.sample.start();
+            const drum = grid.indexOf(row);
+            console.log(drumKit[drum]);
+            drumKit[drum].start();
             console.log(grid); // how is GRID doubled???
           }
         });
@@ -58,7 +63,7 @@ function Guts({
     const toggleSequencePlayback = async (e) => {
           if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
             setArmed(true);  
-            await appContext.start(); //whatever's happening, this isn't triggering properly.
+            await Tone.start(); //whatever's happening, this isn't triggering properly.
             Tone.Transport.scheduleRepeat(triggerSample, "8n");
             console.log('in toggleSequencePayer, setArm')
             // armSequencer();
