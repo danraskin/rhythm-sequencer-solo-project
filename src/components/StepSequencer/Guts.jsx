@@ -1,7 +1,6 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import * as Tone from 'tone';
 
@@ -9,74 +8,71 @@ import './StepSequencer.css';
 import StepTracker from "./StepTracker"
 
 function Guts({
-        bpm,
-        numSteps, 
-        patternName,
-        patternId, 
-        grid, 
-        selectedKitId,
-        playing,
-        setPlaying,
-        armed,
-        setArmed
-    }) {
-
-    const history = useHistory();
+    appContext,
+    bpm,
+    numSteps, 
+    patternName, 
+    grid, 
+    selectedKitId,
+    playing,
+    setPlaying,
+    armed,
+    setArmed,
+}) {
+    
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
 
 
     useEffect(() => {
-
-
         Tone.Transport.bpm.value = bpm;
+        console.log('armed',armed);
         if (!armed) {
             console.log('in if !armed', grid[0][0])
-            Tone.Transport.stop()
-            setPlaying(false);
-            beatRef.current=0;
-        }
-        if (patternId) {
-            console.log('guts useEffect', patternId)
-        } else {
-            console.log('guts useEffect new')
+            // setPlaying(false);
         }
         console.log('guts useEffect', grid[0][0])
+        
+        return () => {
+            // Tone.Transport.stop();
+
+            beatRef.current=0;
+            console.log('guts useEffect stopping');
+        }
+
       }, [bpm])
 
-    const triggerSample = () => {
+      const triggerSample = () => {
         grid.forEach(row => {
           let note = row[beatRef.current];
           if (note.isActive) {
             note.sample.start();
             console.log(grid); // how is GRID doubled???
-            // console.log('armed?',Tone.getContext().state);
           }
         });
         beatRef.current = (beatRef.current + 1) % numSteps;
-        console.log('beat on FOURTH instance',beatRef.current);
-    };
+        console.log('beat',beatRef.current);
+    }
 
-    const toggleSequencePlayback = (e) => {
+    const toggleSequencePlayback = async (e) => {
           if (!armed) { //this triggers Tone.start() the FIRST TIME user clicks' start.
-            setArmed(true);          
-            Tone.start();
-            Tone.getDestination().volume.rampTo(-10, 0.001)
+            setArmed(true);  
+            await appContext.start(); //whatever's happening, this isn't triggering properly.
             Tone.Transport.scheduleRepeat(triggerSample, "8n");
+            console.log('in toggleSequencePayer, setArm')
+            // armSequencer();
           }
       
           if (playing) {
             e.target.innerText = "Play";
+            // beatRef.current=0;
             Tone.Transport.stop(); //this runs the clock, which triggers the 'repeat' function inside 'armSequencer()'
-            beatRef.current=0;
             setPlaying(false);
-            // Tone.context.close();
           } else {
-            Tone.start();
-            Tone.Transport.start();
-            beatRef.current=0;
             e.target.innerText = "Stop";
+            beatRef.current=0;
+            Tone.Transport.start();
             setPlaying(true);
           }
       };
@@ -100,14 +96,14 @@ function Guts({
             // for each 
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
-        console.log('in makePatternObject', patternId);
+//needs to know KIT. this was used to make the grid, and not stored anywhere.
+        console.log('makePatternObject', selectedKitId);
         const patternData = {
             name: patternName,
             user: user.id,
             steps_total: numSteps,
             kit_id: selectedKitId,
-            pattern: pattern,
-            pattern_id: patternId
+            pattern: pattern
         }
 
         return patternData;
@@ -116,19 +112,10 @@ function Guts({
     const savePattern = () => {
         if (user.id) {
             const patternData = makePatternObject();
-            if (!patternId) {
-                dispatch({type: 'CREATE_PATTERN', payload: patternData});
-            } else {
-                dispatch({type: 'EDIT_PATTERN', payload: patternData});
-            }
+            dispatch({type: 'CREATE_PATTERN', payload: patternData});
         } else {
-            alert("Register or Login to save pattern.");
+            alert("Register or Login to save pattern.")
         }
-    }
-
-    const deletePattern = () => {
-        dispatch({type: 'DELETE_PATTERN', payload: patternId})
-        history.push('/pattern');
     }
 
     return (
@@ -154,11 +141,11 @@ function Guts({
                         step={step}
                         beat={beatRef.current}
                     />
+                    
         ))}
                 </div>
             </section>
             <button onClick={()=>savePattern()}>Save pattern</button>
-            { !patternId ? null : <button onClick={()=>deletePattern()}>Delete pattern</button>}
         </div>
     )
 }

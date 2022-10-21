@@ -9,7 +9,9 @@ import useBPM from "./useBPM"
 import Guts from './Guts';
 
 
-function SavedJunk() {
+function SavedJunk(
+    // {armed, setArmed}
+    ) {
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
@@ -19,19 +21,44 @@ function SavedJunk() {
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
-    const [ playing, setPlaying ] = useState(false)
-    const [ armed, setArmed ] = useState(false)
+    const [ playing, setPlaying ] = useState(false);
+    const [ armed, setArmed ] = useState(false);
+    const appContext = new AudioContext();
+    Tone.setContext(appContext);
 
     useEffect( () => {
-        // setGrid([]);
+
+        // console.log('junk useEffect context',Tone.context);
+        console.log('compare contexts',Tone.context===Tone.context);
+        console.log('compare contexts',Tone.context===appContext);
+        // appContextToKill.close();
+        console.log('junk useEffect mount', appContext.state);
+
+        // Tone.setContext(new AudioContext());
+
+        // Tone.setContext(appContext);
+
+        // Tone.setContext(new AudioContext());
+        // console.log(Tone.context);
+        // Tone.setContext(new AudioContext);
+        // console.log('preset State',Tone.context.state);
+        // Tone.context.dispose();
+        // console.log('postset State',Tone.context.state);
+
         buildGrid(patternId);
-        if (!gridX[0]){
-            console.log('junk useEffect', gridX)
+  
+        return () => {
+            console.log('junk useEffect dismount',appContext.state);
+
+            Tone.Transport.stop();
+            appContext.close();
+
+            console.log('junk useEffect dismount post dispose',appContext.state);
         }
     },[patternId,samples]);
 
     const buildGrid = async () => {
-        
+
         const sampless=samples.samplesObj
         let grid = [];
         let drumKit = {}
@@ -53,6 +80,7 @@ function SavedJunk() {
             // console.log('in buildGrid',drumKit);
 
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
+            
             setGrid( grid );
 
             // console.log('in buildGrid', grid)
@@ -63,7 +91,7 @@ function SavedJunk() {
             drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
             grid = newGrid(steps_total, drumKit) //makes grid!
             setGrid( grid );
-            setKitId(kit_id);
+            // setKitId(kit_id);
         }
     }
        
@@ -156,6 +184,7 @@ function SavedJunk() {
             
             { !gridX[0] ? null :
             <Guts
+                appContext={appContext}
                 bpm = {bpm} 
                 numSteps={numSteps}
                 patternName={patternName}

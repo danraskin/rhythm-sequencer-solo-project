@@ -25,6 +25,8 @@ import './App.css';
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(store => store.user);
+  // const [ armed, setArmed ] = useState(false);
+
 
   useEffect(() => {
     dispatch({ type: 'FETCH_USER' });
@@ -80,14 +82,20 @@ function App() {
             exact
             path="/pattern"
           >
-            <Junk />
+            <Junk 
+              // armed={armed}
+              // setArmed={setArmed}
+            />
           </Route>
 
           <ProtectedRoute
             exact
             path="/pattern/:id"
           >
-            <Junk />
+            <Junk
+              // armed={armed}
+              // setArmed={setArmed}
+            />
           </ProtectedRoute>
 
           <Route>
