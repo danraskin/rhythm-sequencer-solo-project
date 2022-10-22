@@ -126,5 +126,11 @@ About
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #ffffff;
+  font-size: .75em;
+  color:black
+}
 
+b {
+  font-size: 1.25em;
 }
