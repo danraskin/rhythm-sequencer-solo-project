@@ -16,10 +16,11 @@ function Junk(
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
     
-    const [ gridX, setGrid ] = useState([])
-    const [ drumKitX, setDrumKitX ] = useState([])
+    const [ gridX, setGrid ] = useState([]);
+    const [ drumKitX, setDrumKitX ] = useState([]);
+    // const [ beat, setBeat ] = useState (0);
 
-    const [ selectedKitId, setKitId ] = useState(1)
+    const [ selectedKitId, setKitId ] = useState(1);
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
@@ -131,7 +132,7 @@ function Junk(
     const selectKit = (kit_id)=> { // this needs work.
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
-        
+
     
     }
 
@@ -171,6 +172,8 @@ function Junk(
                 playing={playing}
                 setPlaying={setPlaying}
                 patternId={patternId}
+                // beat={beat}
+                // setBeat={setBeat}
             />
             }
         </div>

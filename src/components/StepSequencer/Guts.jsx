@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -19,13 +19,16 @@ function Guts({
         setPlaying,
         armed,
         setArmed,
-        patternId
+        patternId,
+        // beat,
+        // setBeat
     }) {
 
     const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
+    const [ beat, setBeat ] = useState (beatRef.current);
 
 
     useEffect(() => {
@@ -44,6 +47,8 @@ function Guts({
       }, [bpm])
 
     const triggerSample = () => {
+        beatRef.current = (beatRef.current + 1) % numSteps;
+        setBeat(beatRef.current);
         grid.forEach(row => {
             let note = row[beatRef.current];
             if (note.isActive) {
@@ -52,8 +57,8 @@ function Guts({
               drumKit[drum].start();
               console.log(grid); // how is GRID doubled???
             }
-          });
-          beatRef.current = (beatRef.current + 1) % numSteps;
+        });
+          
           console.log('beat',beatRef.current);
     };
 
@@ -151,11 +156,13 @@ function Guts({
                                 key={step.step}
                                 step={step}
                                 isActive={true}
+                                beatRef={beat}
                             /> :
                             <StepTracker
                                 key={step.step}
                                 step={step}
                                 isActive={false}
+                                beatRef={beat}
                             />
                     ))}
                 </div>
