@@ -78,6 +78,10 @@ function Junk(
         const SD = require(`../../samples/${sampless[kit_id].SD}`);
         const HH = require(`../../samples/${sampless[kit_id].HH}`);
 
+        // const BD = require(`../../samples/ghost-bass1.WAV`);
+        // const SD = require(`../../samples/ice-snare1.WAV`);
+        // const HH = require(`../../samples/metalHH1.WAV`);
+
         const bdBuffer = new Tone.ToneAudioBuffer(BD);
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
         const hhBuffer = new Tone.ToneAudioBuffer(HH);

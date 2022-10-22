@@ -38,7 +38,7 @@ function Guts({
         return () => {
             // Tone.Transport.stop();
 
-            beatRef.current=0;
+            // beatRef.current=0;
             console.log('guts useEffect stopping');
         }
       }, [bpm])
