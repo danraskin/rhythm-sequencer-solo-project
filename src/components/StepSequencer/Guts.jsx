@@ -20,8 +20,6 @@ function Guts({
         armed,
         setArmed,
         patternId,
-        // beat,
-        // setBeat
     }) {
 
     const history = useHistory();
@@ -29,7 +27,6 @@ function Guts({
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
     const [ beat, setBeat ] = useState (beatRef.current);
-
 
     useEffect(() => {
         Tone.Transport.bpm.value = bpm;
@@ -47,19 +44,22 @@ function Guts({
       }, [bpm])
 
     const triggerSample = () => {
-        beatRef.current = (beatRef.current + 1) % numSteps;
-        setBeat(beatRef.current);
+        setBeat(beatRef.current); //sets beat for step tracker
         grid.forEach(row => {
             let note = row[beatRef.current];
             if (note.isActive) {
-              const drum = grid.indexOf(row);
-              console.log(drumKit[drum]);
-              drumKit[drum].start();
-              console.log(grid); // how is GRID doubled???
+                const drum = grid.indexOf(row);
+                console.log(drumKit[drum]);
+                drumKit[drum].start();
+                drumKit[drum].start('+16n');
+                
+
+
+            //   console.log(grid);
             }
         });
-          
-          console.log('beat',beatRef.current);
+        beatRef.current = (beatRef.current + 1) % numSteps;
+        // console.log('beat',beatRef.current);
     };
 
     const toggleSequencePlayback = async (e) => {
@@ -77,6 +77,7 @@ function Guts({
           } else {
             e.target.innerText = "Stop";
             beatRef.current=0; // resets beat
+            setBeat(beatRef.current);
             repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n"); //schedules repeated triggerSample() event;
             // console.log('in toggleSequencePayer',repeater)
             Tone.Transport.start(); //starts clock
@@ -103,6 +104,7 @@ function Guts({
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
         console.log('in makePatternObject', patternId);
+
         const patternData = {
             name: patternName,
             user: user.id,
@@ -142,7 +144,7 @@ function Guts({
                         {row.map(step => (
                             <div
                                 key={step.step}
-                                className={`step step_${step.step} active-${step.isActive}`}
+                                className={`step active-${step.isActive}`}
                                 id={step.step}
                                 onClick={e=>stepToggle(e,step)}
                             ></div>

@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function StepTracker({step, isActive, beatRef}) {
     
-    // const [ beat, setBeat ] = useState (beatRef.current);
     useState(()=>{
-        // setBeat(beatRef.current)
     },[beatRef])
 
     return(

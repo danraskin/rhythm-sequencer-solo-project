@@ -2,19 +2,6 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 
-//POST steps
-// router.put('/', async (req, res) => {
-  
-
-//     try {
-   
-
-//     } catch (dbErr) {
-//         console.log('PUT /step error: ', dbErr);
-//         res.sendStatus(500);
-//     }
-// });
-
 router.get('/:id', async (req, res) => {
     console.log('in GET steps/id');
     const patternId = req.params.id;

@@ -28,12 +28,9 @@ function Junk(
     const [ armed, setArmed ] = useState(false);
 
     useEffect( () => {
-        // setGrid([]);
         buildGrid(patternId);
         return () => {
-            // console.log('junk useEffect dismount',appContext.state);
             Tone.Transport.stop();
-            // console.log('junk useEffect dismount post dispose',appContext.state);
         }
     },[patternId,samples,numSteps]);
 
@@ -42,7 +39,7 @@ function Junk(
         const sampless=samples.samplesObj
         let grid = [];
         let drumKit = []
-        console.log('in buildGrid', patternId)
+        // console.log('in buildGrid', patternId)
 
         if (patternId) {
             console.log('in buildGrid, patternId = true')
@@ -62,7 +59,7 @@ function Junk(
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
             setGrid( grid );
 
-            console.log('in buildGrid', grid)
+            // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
             const kit_id = 1;
@@ -108,7 +105,7 @@ function Junk(
             }
             rows.push(row);
         };
-        console.log('grid in formatSteps: ',rows);
+        // console.log('grid in formatSteps: ',rows);
         return rows
     }
 
@@ -129,11 +126,9 @@ function Junk(
         return rows
     }
 
-    const selectKit = (kit_id)=> { // this needs work.
+    const selectKit = (kit_id)=> {
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
-
-    
     }
 
     return(
@@ -172,8 +167,6 @@ function Junk(
                 playing={playing}
                 setPlaying={setPlaying}
                 patternId={patternId}
-                // beat={beat}
-                // setBeat={setBeat}
             />
             }
         </div>
