@@ -135,6 +135,7 @@ function Junk(
         console.log(kit_id);
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
+        setKitId(kit_id);
     }
 
     return(
