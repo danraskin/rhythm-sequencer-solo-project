@@ -36,9 +36,9 @@ CREATE TABLE "steps" (
     "id" SERIAL PRIMARY KEY,
     "pattern_id" INT REFERENCES "patterns" NOT NULL,
     "step" INT,
-    "BD" BOOLEAN,
-    "SD" BOOLEAN,
-    "HH" BOOLEAN
+    "BD" INT,
+    "SD" INT,
+    "HH" INT
 );
 
 CREATE TABLE "pattern_params" (

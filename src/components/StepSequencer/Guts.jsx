@@ -86,15 +86,11 @@ function Guts({
       };
 
     const stepToggle = (e,step) => {
-        const shiftOn = e.shiftKey;
+        const shiftOn = e.shiftKey;       
         if (shiftOn) {
-            console.log('shifted!');
-        }
-        
-        if (shiftOn) {
-            if (step.isActive === 1) {
+            if (step.isActive != 2 ) {
                 step.isActive = 2;
-            } else if (step.isActive === 2) {
+            } else {
                 step.isActive = 1;
             }
         } else {
@@ -104,7 +100,6 @@ function Guts({
                 step.isActive = 0;
             }
         }
-
         // step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
         console.log(step.isActive,e.target);
