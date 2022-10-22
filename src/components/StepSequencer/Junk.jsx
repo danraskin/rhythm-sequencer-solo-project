@@ -73,9 +73,14 @@ function Junk(
     }
        
     const buildDrumKit = (sampless, kit_id) => {
+        console.log(sampless[kit_id].BD, kit_id);
         const BD = require(`../../samples/${sampless[kit_id].BD}`);
         const SD = require(`../../samples/${sampless[kit_id].SD}`);
         const HH = require(`../../samples/${sampless[kit_id].HH}`);
+
+        // const BD = require(`../../samples/ghost-bass1.WAV`);
+        // const SD = require(`../../samples/ice-snare1.WAV`);
+        // const HH = require(`../../samples/metalHH1.WAV`);
 
         const bdBuffer = new Tone.ToneAudioBuffer(BD);
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
@@ -117,7 +122,7 @@ function Junk(
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                isActive: false
+                isActive: 0
                 });
             }
             rows.push(row);
@@ -127,8 +132,10 @@ function Junk(
     }
 
     const selectKit = (kit_id)=> {
+        console.log(kit_id);
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
+        setKitId(kit_id);
     }
 
     return(

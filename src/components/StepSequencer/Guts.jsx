@@ -38,7 +38,7 @@ function Guts({
         return () => {
             // Tone.Transport.stop();
 
-            beatRef.current=0;
+            // beatRef.current=0;
             console.log('guts useEffect stopping');
         }
       }, [bpm])
@@ -47,16 +47,16 @@ function Guts({
         setBeat(beatRef.current); //sets beat for step tracker
         grid.forEach(row => {
             let note = row[beatRef.current];
-            if (note.isActive) {
-                const drum = grid.indexOf(row);
-                console.log(drumKit[drum]);
+            const drum = grid.indexOf(row);
+            if (note.isActive === 1 ) {
+                // console.log(drumKit[drum]);
+                drumKit[drum].start();
+            } else if (note.isActive === 2) {
+                // console.log(drumKit[drum]);
                 drumKit[drum].start();
                 drumKit[drum].start('+16n');
-                
-
-
+            };
             //   console.log(grid);
-            }
         });
         beatRef.current = (beatRef.current + 1) % numSteps;
         // console.log('beat',beatRef.current);
@@ -86,9 +86,22 @@ function Guts({
       };
 
     const stepToggle = (e,step) => {
-        step.isActive = !step.isActive;
+        const shiftOn = e.shiftKey;       
+        if (shiftOn) {
+            if (step.isActive != 2 ) {
+                step.isActive = 2;
+            } else {
+                step.isActive = 1;
+            }
+        } else {
+            if (step.isActive === 0 ) {
+                step.isActive = 1;
+            } else {
+                step.isActive = 0;
+            }
+        }
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
-        console.log(step.isActive,e.target);
+        // console.log(step.isActive,e.target);
     }
 
     const makePatternObject = () => {

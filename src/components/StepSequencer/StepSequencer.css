@@ -24,10 +24,13 @@
     margin: 2px;
 }
 
-.active-true {
+.active-2 {
+    background-color:rgb(12, 88, 98);
+}
+.active-1 {
     background-color:rgb(23, 166, 185);
 }
-.active-false {
+.active-0 {
     background-color:rgb(187, 126, 126);
 }
 
