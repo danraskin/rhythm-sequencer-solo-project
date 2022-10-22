@@ -73,6 +73,7 @@ function Junk(
     }
        
     const buildDrumKit = (sampless, kit_id) => {
+        console.log(sampless[kit_id].BD, kit_id);
         const BD = require(`../../samples/${sampless[kit_id].BD}`);
         const SD = require(`../../samples/${sampless[kit_id].SD}`);
         const HH = require(`../../samples/${sampless[kit_id].HH}`);
@@ -127,6 +128,7 @@ function Junk(
     }
 
     const selectKit = (kit_id)=> {
+        console.log(kit_id);
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
     }

@@ -100,9 +100,8 @@ function Guts({
                 step.isActive = 0;
             }
         }
-        // step.isActive = !step.isActive;
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
-        console.log(step.isActive,e.target);
+        // console.log(step.isActive,e.target);
     }
 
     const makePatternObject = () => {

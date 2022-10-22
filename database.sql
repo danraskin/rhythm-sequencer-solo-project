@@ -53,8 +53,10 @@ CREATE TABLE "pattern_params" (
 
 INSERT INTO "sample_kits" ("name","BD","SD","HH")
     VALUES
-    ('Test kit 1','BD.WAV','TOTAL_808_SAMPLE 9_S08.WAV','TOTAL_808_SAMPLE 17_S16.WAV'),
-    ('Test kit 2','TOTAL_808_SAMPLE 26_S25.WAV','TOTAL_808_SAMPLE 11_S10.WAV','TOTAL_808_SAMPLE 23_S22.WAV');
+    ('TR808 1','BD.WAV','TOTAL_808_SAMPLE 9_S08.WAV','TOTAL_808_SAMPLE 17_S16.WAV'),
+    ('TR808 2','TOTAL_808_SAMPLE 26_S25.WAV','TOTAL_808_SAMPLE 11_S10.WAV','TOTAL_808_SAMPLE 23_S22.WAV'),
+    ('concrete 1','ghost-bass2.WAV','ice-snare1.WAV','metalHH2.WAV'),
+    ('concrete 2','ghost-bass1.WAV','metalsnare2.WAV','metalHH1.WAV');
 
 INSERT INTO "drum_type_lookup" ("name")
     VALUES
