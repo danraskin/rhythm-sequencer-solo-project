@@ -150,7 +150,7 @@ function Guts({
 
     return (
         <div className="sequencer_container">
-            <button><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
+            <button className="btn btn_playToggle"><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
             <section className="sequence_grid">
                 { Object.entries(grid).length === 0  ? null : grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>

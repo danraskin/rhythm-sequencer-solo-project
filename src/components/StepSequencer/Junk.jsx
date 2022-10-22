@@ -7,6 +7,7 @@ import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
 import Guts from './Guts';
+import { UserMedia } from 'tone';
 
 
 function Junk(
@@ -15,6 +16,7 @@ function Junk(
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
+    const user = useSelector(store => store.user);
     
     const [ gridX, setGrid ] = useState([]);
     const [ drumKitX, setDrumKitX ] = useState([]);
@@ -143,31 +145,43 @@ function Junk(
             <header>
                 <h1>rhythm sequencer</h1>
             </header>
-            <input
-                type="text"
-                value={patternName}
-                placeholder="new pattern"
-                onChange={e=>setPatternName(e.target.value)}
-            />
-            {BPMslider}
-            <p>{bpm}</p>
-            <p>Steps:
-                <input
-                    type="text"
-                    id="stepCount"
-                    value={numSteps}
-                    onChange={e=>setNumSteps(e.target.value)}
-                /></p>
-            <form
-                id="kitSelector"
-                onChange={e=>selectKit(e.target.value)}>
-                <label>Sample kits</label>
-                <select>
-                        {Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
-                            <option key={kit.id}  value={kit.id}>{kit.name}</option>
-                        ))}
-                </select>
-            </form>
+            <div className="control_panel">
+                <div className="settings">
+                    <p>Steps:
+                        <input
+                            type="text"
+                            id="stepCount"
+                            value={numSteps}
+                            onChange={e=>setNumSteps(e.target.value)}
+                            disabled={patternId ? true : false}
+                        /></p>
+                    <form
+                        id="kitSelector"
+                        onChange={e=>selectKit(e.target.value)}>
+                        <label>Sample kits</label>
+                        <select>
+                                {Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
+                                    <option key={kit.id}  value={kit.id}>{kit.name}</option>
+                                ))}
+                        </select>
+                    </form>
+                </div>
+                <div className="details">
+                    { user ? <p>{user.username}</p> : null }
+                    <p>pattern name: </p>
+                    <input
+                        type="text"
+                        id="patternName"
+                        value={patternName}
+                        placeholder="new pattern"
+                        onChange={e=>setPatternName(e.target.value)}
+                    />
+                </div>
+                <div className="controls">
+                    <p>BPM: {BPMslider} {bpm}</p>
+                </div>
+                
+            </div>
             
             { !gridX[0] ? null :
             <Guts
