@@ -143,23 +143,31 @@ function Junk(
             <header>
                 <h1>rhythm sequencer</h1>
             </header>
-            <input type="text" value={patternName} placeholder="new pattern" onChange={e=>setPatternName(e.target.value)} />
+            <input
+                type="text"
+                value={patternName}
+                placeholder="new pattern"
+                onChange={e=>setPatternName(e.target.value)}
+            />
             {BPMslider}
             <p>{bpm}</p>
-            <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
-            {/* <form >
-                <label>Drum kits</label>
+            <p>Steps:
+                <input
+                    type="text"
+                    id="stepCount"
+                    value={numSteps}
+                    onChange={e=>setNumSteps(e.target.value)}
+                /></p>
+            <form
+                id="kitSelector"
+                onChange={e=>selectKit(e.target.value)}>
+                <label>Sample kits</label>
                 <select>
-                        {samples.map(kit=> (
-                            <option key={kit.id} onClick={e=>selectKit} value={kit}>{kit.name}</option>
+                        {Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
+                            <option key={kit.id}  value={kit.id}>{kit.name}</option>
                         ))}
                 </select>
-            </form> */}
-            <div id="kit_selector">
-                { Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
-                    <button key={kit.id} onClick={e=>selectKit(e.target.value)} value={kit.id}>{kit.name}</button>
-                ))}
-            </div>
+            </form>
             
             { !gridX[0] ? null :
             <Guts

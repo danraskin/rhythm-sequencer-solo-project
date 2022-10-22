@@ -9,7 +9,9 @@
     justify-content: center;
 }
 
-
+#stepCount{
+    width: 20px;
+}
 
 .step {
     border: solid, 5px, black;
