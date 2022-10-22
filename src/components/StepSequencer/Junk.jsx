@@ -117,7 +117,7 @@ function Junk(
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                isActive: false
+                isActive: 0
                 });
             }
             rows.push(row);
