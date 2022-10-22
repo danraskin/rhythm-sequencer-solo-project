@@ -149,7 +149,7 @@ function Guts({
     }
 
     return (
-        <div className="App">
+        <div className="sequencer_container">
             <button><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
             <section className="sequence_grid">
                 { Object.entries(grid).length === 0  ? null : grid.map( (row,i) => (
@@ -182,8 +182,10 @@ function Guts({
                     ))}
                 </div>
             </section>
-            <button onClick={()=>savePattern()}>Save pattern</button>
-            { !patternId ? null : <button onClick={()=>deletePattern()}>Delete pattern</button>}
+            <div className="btns">
+                <button className="btn btn_save" onClick={()=>savePattern()}>Save pattern</button>
+                { !patternId ? null : <button className="btn btn_delete" onClick={()=>deletePattern()}>Delete pattern</button>}
+            </div>
         </div>
     )
 }

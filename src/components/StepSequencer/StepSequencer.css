@@ -1,3 +1,8 @@
+
+/*------------------
+Sequence grid
+-------------------*/
+
 .App {
     margin: 0;
     text-align: center;
@@ -41,4 +46,25 @@
 }
 .track_active-false {
     background-color:rgb(255, 255, 255);
+}
+
+/*------------------
+buttons
+-------------------*/
+.btns {
+    display: flex;
+    flex-direction: rows;
+    justify-content: space-between
+}
+
+.btn_save {
+    /* display: flex; */
+    /* justify-self: start; */
+    margin: 20px 0 0 20%;
+
+}
+
+.btn_delete {
+    margin: 20px 20% 0 0;
+
 }
