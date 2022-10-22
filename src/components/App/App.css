@@ -123,12 +123,34 @@ About
 }
 
 .abt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+
+  grid-template-columns: 65% 35%;
+  grid-template-rows: 50% 50% ;
+
   background-color: #ffffff;
   font-size: .75em;
   color:black
+}
+
+.abt_tech {
+  grid-column: 1 / 2 ;
+  grid-row: 1 / 3;
+  justify-self: left;
+  margin-left: 10%
+}
+
+.abt_next {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  margin-right: 10%
+}
+
+.abt_thanks {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  margin-right: 10%
+
 }
 
 b {
