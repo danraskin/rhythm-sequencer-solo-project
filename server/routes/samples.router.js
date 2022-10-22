@@ -9,23 +9,19 @@ router.get('/', async (req, res) => {
     console.log('in GET /samples');
     try {
         const dbRes = await pool.query(`SELECT * FROM "sample_kits";`);
-
-        const samples = {
-            1: {
-                name: dbRes.rows[0].name,
-                BD: dbRes.rows[0].BD,
-                SD: dbRes.rows[0].SD,
-                HH: dbRes.rows[0].HH
-            },
-            2: {
-                name: dbRes.rows[1].name,
-                BD: dbRes.rows[1].BD,
-                SD: dbRes.rows[1].SD,
-                HH: dbRes.rows[1].HH
+        console.log(dbRes.rows);
+        const keys = dbRes.rows.length;
+        const samples = {};
+        for (i = 0; i < keys; i++) {
+            samples[i+1] = {
+                    name: dbRes.rows[i].name,
+                    BD: dbRes.rows[i].BD,
+                    SD: dbRes.rows[i].SD,
+                    HH: dbRes.rows[i].HH
+                }
             }
-        }
-        // this duplication is not ideal, but it allows me to map the array on render
-        // AND select sample in createGrid
+        console.log(samples);
+     //duplication of samples into array and object allows use of samples for menu rendering and drumkit creation 
         res.send({ 
             samplesArr: dbRes.rows,
             samplesObj: samples

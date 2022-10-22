@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -19,14 +19,14 @@ function Guts({
         setPlaying,
         armed,
         setArmed,
-        patternId
+        patternId,
     }) {
 
     const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector(store => store.user);
     const beatRef = useRef(0);
-
+    const [ beat, setBeat ] = useState (beatRef.current);
 
     useEffect(() => {
         Tone.Transport.bpm.value = bpm;
@@ -38,23 +38,28 @@ function Guts({
         return () => {
             // Tone.Transport.stop();
 
-            beatRef.current=0;
+            // beatRef.current=0;
             console.log('guts useEffect stopping');
         }
       }, [bpm])
 
     const triggerSample = () => {
+        setBeat(beatRef.current); //sets beat for step tracker
         grid.forEach(row => {
             let note = row[beatRef.current];
-            if (note.isActive) {
-              const drum = grid.indexOf(row);
-              console.log(drumKit[drum]);
-              drumKit[drum].start();
-              console.log(grid); // how is GRID doubled???
-            }
-          });
-          beatRef.current = (beatRef.current + 1) % numSteps;
-          console.log('beat',beatRef.current);
+            const drum = grid.indexOf(row);
+            if (note.isActive === 1 ) {
+                // console.log(drumKit[drum]);
+                drumKit[drum].start();
+            } else if (note.isActive === 2) {
+                // console.log(drumKit[drum]);
+                drumKit[drum].start();
+                drumKit[drum].start('+16n');
+            };
+            //   console.log(grid);
+        });
+        beatRef.current = (beatRef.current + 1) % numSteps;
+        // console.log('beat',beatRef.current);
     };
 
     const toggleSequencePlayback = async (e) => {
@@ -72,6 +77,7 @@ function Guts({
           } else {
             e.target.innerText = "Stop";
             beatRef.current=0; // resets beat
+            setBeat(beatRef.current);
             repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n"); //schedules repeated triggerSample() event;
             // console.log('in toggleSequencePayer',repeater)
             Tone.Transport.start(); //starts clock
@@ -80,9 +86,22 @@ function Guts({
       };
 
     const stepToggle = (e,step) => {
-        step.isActive = !step.isActive;
+        const shiftOn = e.shiftKey;       
+        if (shiftOn) {
+            if (step.isActive != 2 ) {
+                step.isActive = 2;
+            } else {
+                step.isActive = 1;
+            }
+        } else {
+            if (step.isActive === 0 ) {
+                step.isActive = 1;
+            } else {
+                step.isActive = 0;
+            }
+        }
         e.target.className=`step  step_${step.step} active-${step.isActive}`;
-        console.log(step.isActive,e.target);
+        // console.log(step.isActive,e.target);
     }
 
     const makePatternObject = () => {
@@ -98,6 +117,7 @@ function Guts({
             pattern[drumNames[grid.indexOf(row)]] = setRow;
         }
         console.log('in makePatternObject', patternId);
+
         const patternData = {
             name: patternName,
             user: user.id,
@@ -129,15 +149,15 @@ function Guts({
     }
 
     return (
-        <div className="App">
-            <button><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
+        <div className="sequencer_container">
+            <button className="btn btn_playToggle"><tone-button onClick={e=>toggleSequencePlayback(e)}>Play</tone-button></button>
             <section className="sequence_grid">
                 { Object.entries(grid).length === 0  ? null : grid.map( (row,i) => (
                     <div className={`row row_${i}`} key={i}>
                         {row.map(step => (
                             <div
                                 key={step.step}
-                                className={`step step_${step.step} active-${step.isActive}`}
+                                className={`step active-${step.isActive}`}
                                 id={step.step}
                                 onClick={e=>stepToggle(e,step)}
                             ></div>
@@ -151,17 +171,21 @@ function Guts({
                                 key={step.step}
                                 step={step}
                                 isActive={true}
+                                beatRef={beat}
                             /> :
                             <StepTracker
                                 key={step.step}
                                 step={step}
                                 isActive={false}
+                                beatRef={beat}
                             />
                     ))}
                 </div>
             </section>
-            <button onClick={()=>savePattern()}>Save pattern</button>
-            { !patternId ? null : <button onClick={()=>deletePattern()}>Delete pattern</button>}
+            <div className="btns">
+                <button className="btn btn_save" onClick={()=>savePattern()}>Save pattern</button>
+                { !patternId ? null : <button className="btn btn_delete" onClick={()=>deletePattern()}>Delete pattern</button>}
+            </div>
         </div>
     )
 }

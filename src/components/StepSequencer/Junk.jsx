@@ -7,6 +7,7 @@ import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
 import Guts from './Guts';
+import { UserMedia } from 'tone';
 
 
 function Junk(
@@ -15,11 +16,13 @@ function Junk(
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
+    const user = useSelector(store => store.user);
     
-    const [ gridX, setGrid ] = useState([])
-    const [ drumKitX, setDrumKitX ] = useState([])
+    const [ gridX, setGrid ] = useState([]);
+    const [ drumKitX, setDrumKitX ] = useState([]);
+    // const [ beat, setBeat ] = useState (0);
 
-    const [ selectedKitId, setKitId ] = useState(1)
+    const [ selectedKitId, setKitId ] = useState(1);
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
@@ -27,12 +30,9 @@ function Junk(
     const [ armed, setArmed ] = useState(false);
 
     useEffect( () => {
-        // setGrid([]);
         buildGrid(patternId);
         return () => {
-            // console.log('junk useEffect dismount',appContext.state);
             Tone.Transport.stop();
-            // console.log('junk useEffect dismount post dispose',appContext.state);
         }
     },[patternId,samples,numSteps]);
 
@@ -41,7 +41,7 @@ function Junk(
         const sampless=samples.samplesObj
         let grid = [];
         let drumKit = []
-        console.log('in buildGrid', patternId)
+        // console.log('in buildGrid', patternId)
 
         if (patternId) {
             console.log('in buildGrid, patternId = true')
@@ -61,7 +61,7 @@ function Junk(
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
             setGrid( grid );
 
-            console.log('in buildGrid', grid)
+            // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
             const kit_id = 1;
@@ -75,9 +75,14 @@ function Junk(
     }
        
     const buildDrumKit = (sampless, kit_id) => {
+        console.log(sampless[kit_id].BD, kit_id);
         const BD = require(`../../samples/${sampless[kit_id].BD}`);
         const SD = require(`../../samples/${sampless[kit_id].SD}`);
         const HH = require(`../../samples/${sampless[kit_id].HH}`);
+
+        // const BD = require(`../../samples/ghost-bass1.WAV`);
+        // const SD = require(`../../samples/ice-snare1.WAV`);
+        // const HH = require(`../../samples/metalHH1.WAV`);
 
         const bdBuffer = new Tone.ToneAudioBuffer(BD);
         const sdBuffer = new Tone.ToneAudioBuffer(SD);
@@ -107,7 +112,7 @@ function Junk(
             }
             rows.push(row);
         };
-        console.log('grid in formatSteps: ',rows);
+        // console.log('grid in formatSteps: ',rows);
         return rows
     }
 
@@ -119,7 +124,7 @@ function Junk(
             for (let i = 0; i < steps_total; i++) {
                 row.push({
                 step: i,
-                isActive: false
+                isActive: 0
                 });
             }
             rows.push(row);
@@ -128,11 +133,11 @@ function Junk(
         return rows
     }
 
-    const selectKit = (kit_id)=> { // this needs work.
+    const selectKit = (kit_id)=> {
+        console.log(kit_id);
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
         setDrumKitX(drumKit);
-        
-    
+        setKitId(kit_id);
     }
 
     return(
@@ -140,22 +145,42 @@ function Junk(
             <header>
                 <h1>rhythm sequencer</h1>
             </header>
-            <input type="text" value={patternName} placeholder="new pattern" onChange={e=>setPatternName(e.target.value)} />
-            {BPMslider}
-            <p>{bpm}</p>
-            <p>Steps:<input type="text" value={numSteps} onChange={e=>setNumSteps(e.target.value)} /></p>
-            {/* <form >
-                <label>Drum kits</label>
-                <select>
-                        {samples.map(kit=> (
-                            <option key={kit.id} onClick={e=>selectKit} value={kit}>{kit.name}</option>
-                        ))}
-                </select>
-            </form> */}
-            <div id="kit_selector">
-                { Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
-                    <button key={kit.id} onClick={e=>selectKit(e.target.value)} value={kit.id}>{kit.name}</button>
-                ))}
+            <div className="control_panel">
+                <div className="settings">
+                    <p>Steps:
+                        <input
+                            type="text"
+                            id="stepCount"
+                            value={numSteps}
+                            onChange={e=>setNumSteps(e.target.value)}
+                            disabled={patternId ? true : false}
+                        /></p>
+                    <form
+                        id="kitSelector"
+                        onChange={e=>selectKit(e.target.value)}>
+                        <label>Sample kits</label>
+                        <select>
+                                {Object.entries(samples).length === 0 ? null : samples.samplesArr.map(kit=> (
+                                    <option key={kit.id}  value={kit.id}>{kit.name}</option>
+                                ))}
+                        </select>
+                    </form>
+                </div>
+                <div className="details">
+                    { user ? <p>{user.username}</p> : null }
+                    <p>pattern name: </p>
+                    <input
+                        type="text"
+                        id="patternName"
+                        value={patternName}
+                        placeholder="new pattern"
+                        onChange={e=>setPatternName(e.target.value)}
+                    />
+                </div>
+                <div className="controls">
+                    <p>BPM: {BPMslider} {bpm}</p>
+                </div>
+                
             </div>
             
             { !gridX[0] ? null :

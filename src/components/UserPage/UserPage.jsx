@@ -7,7 +7,6 @@ function UserPage() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const user = useSelector(store => store.user);
   const patterns = useSelector(store => store.patterns) 
 
   useEffect(()=>{
@@ -15,14 +14,12 @@ function UserPage() {
   },[]);
 
   return (
-    <div className="container">
-      <h2>User: {user.username}</h2>
+    <div className="dropdown">
       {patterns.map(pattern => (
         <div key={pattern.id}>
-          <button onClick={()=>history.push(`/pattern/${pattern.id}`)}>{pattern.name}</button>
+          <button className="btn" onClick={()=>history.push(`/pattern/${pattern.id}`)}>{pattern.name}</button>
         </div>
       ))}
-      <LogOutButton className="btn" />
     </div>
   );
 }
