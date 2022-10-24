@@ -1,121 +1,96 @@
 
-# Prime Solo Project Starting Repo
-This version uses React, Redux, Express, Passport, and PostgreSQL (a full list of dependencies can be found in `package.json`).
+# React/ToneJS Drum Machine
 
-We **STRONGLY** recommend following these instructions carefully. It's a lot, and will take some time to set up, but your life will be much easier this way in the long run.
+A sample-based step-sequencer for in-brower use built using React and ToneJS. I built this in 2.5 weeks as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node/postgreSQL stack taught in the Prime curriculum. It is my first full-stack application, built in the third month of an accelerated full-stack software engineering progam.
 
-## Use the Template for This Repository (Don't Clone)
+* Design Concepts
 
-- Don't Fork or Clone. Instead, click the `Use this Template` button, and make a copy to your personal account. Make the project `PUBLIC`!
+- There are some excellent browser drum machines already available, and none serve the needs of serious music-making. Building one from scratch with a new stack allowed me to concentrate on the most minimal functions *i* need for a single instrument to feel generative and fun to use. They are:
+
+1. setting step count/time signature
+2. constructing and editing sequence while clock is running
+3. modifing BPM while sequence is playing
+4. *good* sounds.
+5. visual representation of step position.
+6. minimal interface.
+
+- setting a double trigger is only unique function of this machine, and considerably improves its playability.
+- kits used for testing/demo: three samples per kit is minimum for dynamic rhythms. 808 kits are carelessly assembled from a Roland TR-808 sample pack.
+'conrete 1' and 'concrete 2' more carefully assembled from my personal library of recordigs and improvisations..
+
+* Visual Design
+
+err... not where i want to be. the simpler it is, the fewer opportunities there are for bad questionable decisions.
+
+* Data management
+
+Project parameters required data to be created, retrieved, updated and deleted by users (*C*R*U*D*). Originally, I attempted to route all data retrievals through React Sagas, and store all data used by components in redux reducers. I ran into so many problems with sequencing component renders after data was available in redux store, so I backtracked. User, sample, and saved pattern data are retrieved from database by Axios requests in saga functions; steps data for specific patterns are retrieved by Axios request in main sequencer component ("Junk")
+
+# The 🦑 🦗 GUTS 🦐 🐙 
+
+I hope that a detailed description of this code can help orient anybody searching for tips on how to build a step-sequencer using React and ToneJS can learn from it.
+
+* Component Structure
+
+* React Hooks
+
+* Redux/Sagas
+
+* Data Structures
+
+- 'grid' array is primary data structure used by app. 
+
+[ 
+  [ {...}, {...}, {...}, {...} ],
+  [ {...}, {...}, {...}, {...} ],
+  [ {...}, {...}, {...}, {...} ]
+]
+where grid[x] = row and grid[x][y] = step
+
+where step is
+{
+  isActive: [0/1/2],
+  step: [y]
+}
 
 
-## Prerequisites
+- 'drumKit' array is and array of ToneJS players
+[
+  Tone.Player(BD),
+  Tone.Player(SD),
+  Tone.Player(HH)
+]
 
-Before you get started, make sure you have the following software installed on your computer:
+grid and drumKit are created in 'Junk.jsx' on DOM load and passed to 'Guts.jsx' as prop.
 
-- [Node.js](https://nodejs.org/en/)
-- [PostrgeSQL](https://www.postgresql.org/)
-- [Nodemon](https://nodemon.io/)
+- data from server
+data is passed to and from server in various forms. This stuff is legible, but probably not worth explicating in the readme.md. 
 
-## Create database and table
+* Tone Playback
 
-Create a new database called `prime_app` and create a `user` table:
+- Set Sample Objects with Tone.Buffer and Tone.Player ('Junk.jsx')
+Don't quite understand what distinguishes Buffers and Players, but together, they create a playable object that can trigger .WAV playbacks. (it's possible buffers do not need to be defined).
 
-```SQL
-CREATE TABLE "user" (
-    "id" SERIAL PRIMARY KEY,
-    "username" VARCHAR (80) UNIQUE NOT NULL,
-    "password" VARCHAR (1000) NOT NULL
-);
-```
+Tone.Players are created by buildDrumKit() in 'Junks.jsx', stored in an array as DrumKit and sent as prop to 'Guts.jsx.'
 
-If you would like to name your database something else, you will need to change `prime_app` to the name of your new database name in `server/modules/pool.js`
+- Playback with Tone.start() and Tone.Transport ('Guts.jsx')
+Playback is controlled by ToggleSequencePlayback in 'Guts.jsx'.
 
-## Development Setup Instructions
+*Tone.start()*, triggered by a specific user action, is required for any audioplayback. Functionally, can only be called *once* per Junk.jsx load. this is managed with a logic gate and the 'armed' boolean.
 
-- Run `npm install`
-- Create a `.env` file at the root of the project and paste this line into the file:
-  ```
-  SERVER_SESSION_SECRET=superDuperSecret
-  ```
-  While you're in your new `.env` file, take the time to replace `superDuperSecret` with some long random string like `25POUbVtx6RKVNWszd9ERB9Bb6` to keep your application secure. Here's a site that can help you: [https://passwordsgenerator.net/](https://passwordsgenerator.net/). If you don't do this step, create a secret with less than eight characters, or leave it as `superDuperSecret`, you will get a warning.
-- Start postgres if not running already by using `brew services start postgresql`
-- Run `npm run server`
-- Run `npm run client`
-- Navigate to `localhost:3000`
+*Tone.Transport.start(), Tone.Transport.stop() and Tone.Transport.scheduleRepeat()* are also handled in ToggleSequencePlayback() via logic gate with 'playing' boolean.
 
-## Debugging
+*scheduleRepeat(triggerSample(),"8n")* schedules an Event: 'triggerSample()' to occur every 8th note count within the Tone.Transport clock.
 
-To debug, you will need to run the client-side separately from the server. Start the client by running the command `npm run client`. Start the debugging server by selecting the Debug button.
+scheduleRepeat() Returns a unique event ID (see ToneJS documentations). 'repeater' variable saves event id to state. 
+Tone.Transport.cancel(repeater) cancels the event. Without cancelling, multiple 'scheduleRepeat' events stack on top of each other, triggering multiple patterns to play at once. it gets ugly.
 
-![VSCode Toolbar](documentation/images/vscode-toolbar.png)
+*triggerSample()* function takes uses current step (beatRef.current) to read 'isActive' value in a given step position in the 'grid' array. if isActive = 1 or 2, Sample.start() triggers the drum sample in 'drumKit' array that matches the row of selected step in 'grid' array.
 
-Then make sure `Launch Program` is selected from the dropdown, then click the green play arrow.
+# Technologies
 
-![VSCode Debug Bar](documentation/images/vscode-debug-bar.png)
+HTML/CSS/JS; React/Redux/Saga; Axios; NodeJS/Express/PostgreSQL; ToneJS; Passport...
 
-## Testing Routes with Postman
+For full dependencies list see package.JSON
 
-To use Postman with this repo, you will need to set up requests in Postman to register a user and login a user at a minimum.
-
-Keep in mind that once you using the login route, Postman will manage your session cookie for you just like a browser, ensuring it is sent with each subsequent request. If you delete the `localhost` cookie in Postman, it will effectively log you out.
-
-1. Start the server - `npm run server`
-2. Import the sample routes JSON file [v2](./PostmanPrimeSoloRoutesv2.json) by clicking `Import` in Postman. Select the file.
-3. Click `Collections` and `Send` the following three calls in order:
-   1. `POST /api/user/register` registers a new user, see body to change username/password
-   2. `POST /api/user/login` will login a user, see body to change username/password
-   3. `GET /api/user` will get user information, by default it's not very much
-
-After running the login route above, you can try any other route you've created that requires a logged in user!
-
-## Production Build
-
-Before pushing to Heroku, run `npm run build` in terminal. This will create a build folder that contains the code Heroku will be pointed at. You can test this build by typing `npm start`. Keep in mind that `npm start` will let you preview the production build but will **not** auto update.
-
-- Start postgres if not running already by using `brew services start postgresql`
-- Run `npm start`
-- Navigate to `localhost:5000`
-
-## Lay of the Land
-
-There are a few videos linked below that show a walkthrough the client and sever setup to help acclimatize to the boilerplate. Please take some time to watch the videos in order to get a better understanding of what the boilerplate is like.
-
-- [Initial Set](https://vimeo.com/453297271)
-- [Server Walkthrough](https://vimeo.com/453297212)
-- [Client Walkthrough](https://vimeo.com/453297124)
-
-Directory Structure:
-
-- `src/` contains the React application
-- `public/` contains static assets for the client-side
-- `build/` after you build the project, contains the transpiled code from `src/` and `public/` that will be viewed on the production site
-- `server/` contains the Express App
-
-This code is also heavily commented. We recommend reading through the comments, getting a lay of the land, and becoming comfortable with how the code works before you start making too many changes. If you're wondering where to start, consider reading through component file comments in the following order:
-
-- src/components
-  - App/App
-  - Footer/Footer
-  - Nav/Nav
-  - AboutPage/AboutPage
-  - InfoPage/InfoPage
-  - UserPage/UserPage
-  - LoginPage/LoginPage
-  - RegisterPage/RegisterPage
-  - LogOutButton/LogOutButton
-  - ProtectedRoute/ProtectedRoute
-
-## Deployment
-
-1. Create a new Heroku project
-1. Link the Heroku project to the project GitHub Repo
-1. Create an Heroku Postgres database
-1. Connect to the Heroku Postgres database from Postico
-1. Create the necessary tables
-1. Add an environment variable for `SERVER_SESSION_SECRET` with a nice random string for security
-1. In the deploy section, select manual deploy
-
-## Update Documentation
-
-Customize this ReadMe and the code comments in this project to read less like a starter repo and more like a project. Here is an example: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
+# Acknowledgements

@@ -1,38 +1,36 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom' 
 import axios from 'axios';
-
 import * as Tone from 'tone';
 
 import useBPM from "./useBPM"
 import Guts from './Guts';
-import { UserMedia } from 'tone';
 
 
-function Junk(
-    // {armed,setArmed}
-    ) {
+function Junk() {
+    const dispatch = useDispatch();
     const params = useParams();
     const patternId = params.id;
     const samples = useSelector(store=>store.samples);
     const user = useSelector(store => store.user);
     
+    // lots of local state. some of this could probably get moved to reducers?
     const [ gridX, setGrid ] = useState([]);
     const [ drumKitX, setDrumKitX ] = useState([]);
-    // const [ beat, setBeat ] = useState (0);
-
     const [ selectedKitId, setKitId ] = useState(1);
     const [ bpm, BPMslider ] = useBPM(120);
     const [ numSteps, setNumSteps ] = useState(8);
     const [ patternName, setPatternName ] = useState('new pattern');
     const [ playing, setPlaying ] = useState(false);
     const [ armed, setArmed ] = useState(false);
+    const [ repeater, setRepeater ] = useState();
 
     useEffect( () => {
-        buildGrid(patternId);
+        buildGrid(patternId); //builds grid on page load.
         return () => {
-            Tone.Transport.stop();
+            Tone.Transport.stop(); // if user navigates to new page (saved sample or new pattern), stops transport.
+            Tone.Transport.cancel(repeater);
         }
     },[patternId,samples,numSteps]);
 
@@ -41,12 +39,9 @@ function Junk(
         const sampless=samples.samplesObj
         let grid = [];
         let drumKit = []
-        // console.log('in buildGrid', patternId)
 
         if (patternId) {
-            console.log('in buildGrid, patternId = true')
-            const patternData = await axios.get(`api/steps/${patternId}`);
-            console.log(patternData.data);
+            const patternData = await axios.get(`api/steps/${patternId}`); // have tried to move patternData to a reducer, but run into rendering issues. keeping async functions linear in the component,keeps things working.
             const kit_id = patternData.data.kit_id;
             const steps = patternData.data.grid;
             const steps_total = patternData.data.steps_total;
@@ -55,13 +50,10 @@ function Junk(
             setPatternName(name);
             setKitId(kit_id); //for saving pattern
             
-            drumKit = buildDrumKit(sampless, kit_id); //builds drumKit
-            // console.log('in buildGrid',drumKit);
+            drumKit = buildDrumKit(sampless, kit_id); // builds drumKit
             setDrumKitX(drumKit);
             grid = formatSteps(steps, steps_total, drumKit) //makes grid!
             setGrid( grid );
-
-            // console.log('in buildGrid', grid)
 
         } else { //this will be for new sample
             const kit_id = 1;
@@ -75,48 +67,48 @@ function Junk(
     }
        
     const buildDrumKit = (sampless, kit_id) => {
-        console.log(sampless[kit_id].BD, kit_id);
+        // console.log(sampless[kit_id].BD, kit_id);
         const BD = require(`../../samples/${sampless[kit_id].BD}`);
         const SD = require(`../../samples/${sampless[kit_id].SD}`);
         const HH = require(`../../samples/${sampless[kit_id].HH}`);
 
-        // const BD = require(`../../samples/ghost-bass1.WAV`);
-        // const SD = require(`../../samples/ice-snare1.WAV`);
-        // const HH = require(`../../samples/metalHH1.WAV`);
-
-        const bdBuffer = new Tone.ToneAudioBuffer(BD);
-        const sdBuffer = new Tone.ToneAudioBuffer(SD);
-        const hhBuffer = new Tone.ToneAudioBuffer(HH);
-        
+        // const bdBuffer = new Tone.ToneAudioBuffer(BD);
+        // const sdBuffer = new Tone.ToneAudioBuffer(SD);
+        // const hhBuffer = new Tone.ToneAudioBuffer(HH);
+        // i'm not sure i actually need to define buffers separately from players!
         const drumKit = [
-            new Tone.Player(bdBuffer),
-            new Tone.Player(sdBuffer),
-            new Tone.Player(hhBuffer) 
+            // new Tone.Player(bdBuffer),
+            // new Tone.Player(sdBuffer),
+            // new Tone.Player(hhBuffer) 
+            new Tone.Player(BD),
+            new Tone.Player(SD),
+            new Tone.Player(HH) 
     ]
-        for (const drum of drumKit){drum.toDestination()};
+        for (const drum of drumKit){drum.toDestination()}; // links each PLAYER to audio output
         return drumKit;
     }
 
     const formatSteps = (steps, steps_total) => {
-        // console.log('in formatSteps', steps);
+        // formats steps data from database to fit in GRID
         const rows = []; 
-        const drumKit = ['BD','SD','HH'];  
+        const drumKit = ['BD','SD','HH']; // dummy array for structuring grid
         for (const sample of drumKit) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
             const row = [];
             for (let i = 0; i < steps_total; i++) {
                 row.push({
-                step: i,
-                isActive: steps[i][sample]
+                    step: i,
+                    isActive: steps[i][sample]
                 });
             }
             rows.push(row);
         };
         // console.log('grid in formatSteps: ',rows);
-        return rows
+        return rows //rows is grid
     }
 
     const newGrid = (steps_total) => {
+        // creates new grid with no steps data
         const rows = [];  
         for (let j = 0; j < 3; j++) {
             // console.log('sample in drumKit', sample, drumKit[sample]);
@@ -130,13 +122,14 @@ function Junk(
             rows.push(row);
         };
         // console.log('grid in newGrid: ',rows);
-        return rows
+        return rows // rows is grid
     }
 
     const selectKit = (kit_id)=> {
-        console.log(kit_id);
+        // SHOULD DRUMKIT GET SENT TO A REDUCER?
+        // console.log(kit_id);
         const drumKit = buildDrumKit(samples.samplesObj, kit_id)
-        setDrumKitX(drumKit);
+        setDrumKitX(drumKit)
         setKitId(kit_id);
     }
 
@@ -184,19 +177,21 @@ function Junk(
             </div>
             
             { !gridX[0] ? null :
-            <Guts
-                drumKit={drumKitX}
-                bpm = {bpm} 
-                numSteps={numSteps}
-                patternName={patternName}
-                grid={gridX}
-                selectedKitId={selectedKitId}
-                armed={armed}
-                setArmed={setArmed}
-                playing={playing}
-                setPlaying={setPlaying}
-                patternId={patternId}
-            />
+                <Guts
+                    drumKit={drumKitX}
+                    bpm = {bpm} 
+                    numSteps={numSteps}
+                    patternName={patternName}
+                    grid={gridX}
+                    selectedKitId={selectedKitId}
+                    armed={armed}
+                    setArmed={setArmed}
+                    playing={playing}
+                    setPlaying={setPlaying}
+                    patternId={patternId}
+                    repeater={repeater}
+                    setRepeater={setRepeater}
+                />
             }
         </div>
         
