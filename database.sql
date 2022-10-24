@@ -1,4 +1,4 @@
-DROP TABLE "user", "sample_kits", "patterns", "drum_type_lookup", "steps", "pattern_params" CASCADE;
+-- DROP TABLE "user", "sample_kits", "patterns", "drum_type_lookup", "steps", "pattern_params" CASCADE;
 
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
