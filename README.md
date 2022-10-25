@@ -1,11 +1,11 @@
 
 # React/ToneJS Drum Machine
 
-A sample-based step-sequencer for in-brower use built using React and ToneJS. I built this in 2.5 weeks as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node/postgreSQL stack taught in the Prime curriculum. It is my first full-stack application, built in the third month of an accelerated full-stack software engineering progam.
+  A sample-based step-sequencer for in-brower use built using React and ToneJS. I built this in 2.5 weeks as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node/postgreSQL stack taught in the Prime curriculum. It is my first full-stack application, built in the third month of an accelerated full-stack software engineering progam.
 
 ## Using the Sequencer
 
-It's a basic tool. users first navigate to a new pattern page, (/pattern) where they can access the full functionality of the sequencer. if they want to save a pattern, they must login or register via the navbar. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
+  It's a basic tool. users first navigate to a new pattern page, (/pattern) where they can access the full functionality of the sequencer. if they want to save a pattern, they must login or register via the navbar. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
 
   * SHIFT + CLICK to set step status to 'double trigger'
   * things might get freaky when users navigate to a new or saved pattern without *stopping* the clock/sequencer. if this happens, stop -> start or refresh.
@@ -16,8 +16,8 @@ It's a basic tool. users first navigate to a new pattern page, (/pattern) where 
 
 ## Design Concepts/Notes
 
-* Overview
-  There are some excellent browser drum machines already available, and none serve the needs of serious music-making. Building one from scratch with a new stack allowed me to concentrate on the most minimal functions *i* need for a single instrument to feel generative and fun to use. They are:
+* Overview 
+    There are some excellent browser drum machines already available, and none serve the needs of serious music-making. Building one from scratch with a new stack allowed me to concentrate on the most minimal functions *i* need for a single instrument to feel generative and fun to use. They are:
 
     1. setting step count/time signature
     2. constructing and editing sequence while clock is running
@@ -31,29 +31,29 @@ It's a basic tool. users first navigate to a new pattern page, (/pattern) where 
 
 * Visual Design
 
- err... not where i want to be. the simpler it is, the fewer opportunities there are for bad questionable decisions.
+    err... not where i want to be. the simpler it is, the fewer opportunities there are for bad questionable decisions.
 
 * Data management
 
- Project parameters required data to be created, retrieved, updated and deleted by users (*C*R*U*D*). While password and login AUTH is inessential to the functionality of the app, it met the criteria of the project.
+    Project parameters required data to be created, retrieved, updated and deleted by users (*C*R*U*D*). While password and login AUTH is inessential to the functionality of the app, it met the criteria of the project.
 
 # The 🦑 🦗 GUTS 🦐 🐙 
 
- I hope that a detailed description of this code can help orient anybody searching for tips on how to build a step-sequencer using React and ToneJS can learn from it.
+   I hope that a detailed description of this code can help orient anybody searching for tips on how to build a step-sequencer using React and ToneJS can learn from it.
 
 * ARCHITECTURE
 
- The main app components live in /src/StepSequencer. There are two primary components: Junk.jsx and Guts.jsx.
- Junk is the parent compont.
-   - data from server is accessed here and transformed into sequencer grid array and drumKit array. 'Jun.jsx' is accessed via /pattern, a new 8-step grid is created, and a drumKit with samples from the TR808-1 kit are set as default. If user selects a saved pattern, (/pattern/id), pattern ID is sent server url and used to fetch stored pattern data.
-   - BuildGrid() function is determined by whether or not patternId resolves as  true, which is determined by whether or not page is accessed with an '/id' (useParams).
-   - if user selects a different drum kit from dropdown menu, 'makeDrumKit()' makes a new drumKit array.
-   - BPM slider, pattern name, and sequence length are set here.
+    The main app components live in /src/StepSequencer. There are two primary components: Junk.jsx and Guts.jsx.
+    Junk is the parent compont.
+      - data from server is accessed here and transformed into sequencer grid array and drumKit array. (/pattern) navigates to renders junk.jsx component, where a new 8-step grid is created, and a drumKit with samples from the TR808-1 kit are set as default. If user selects a saved pattern, (/pattern/id), pattern ID is sent server url and used to fetch stored pattern data.
+      - BuildGrid() function is determined by whether or not patternId resolves as  true, which is determined by whether or not page is accessed with an '/id' (useParams).
+      - if user selects a different drum kit from dropdown menu, 'makeDrumKit()' makes a new drumKit array.
+      - BPM slider, pattern name, and sequence length are set here.
 
-  Most values from 'Junk' are passed as props to 'Guts'. Guts is responsible for rendering the grid, setting step status (single trigger, double trigger, or inactive), sample playback, and the dispatching new saved data to saga functions.
+    Most values from 'Junk' are passed as props to 'Guts'. Guts is responsible for rendering the grid, setting step status (single trigger, double trigger, or inactive), sample playback, and the dispatching new saved data to saga functions.
 
 * Data Management
- Originally, I attempted to route all data retrievals through Redux-Sagas, and to store all data used by components in Redux reducers. I ran into enough many problems with sequencing component renders after data was available in redux store that I backtracked, and set most active parameters to local React state using React Hooks (see below). User, sample, and saved pattern data are retrieved from database by Axios requests in saga functions; step data for specific patterns are retrieved by Axios request in main sequencer component ("Junk")
+   Originally, I attempted to route all data retrievals through Redux-Sagas, and to store all data used by components in Redux reducers. I ran into enough many problems with sequencing component renders after data was available in redux store that I backtracked, and set most active parameters to local React state using React Hooks (see below). User, sample, and saved pattern data are retrieved from database by Axios requests in saga functions; step data for specific patterns are retrieved by Axios request in main sequencer component ("Junk")
 
 * REACT HOOKS
 
@@ -63,11 +63,11 @@ It's a basic tool. users first navigate to a new pattern page, (/pattern) where 
 
   - 'grid' array is primary data structure used by app. 
 
-    [ 
+      [ 
       [ {...}, {...}, {...}, {...} ],
       [ {...}, {...}, {...}, {...} ],
       [ {...}, {...}, {...}, {...} ]
-    ]
+      ]
     where grid[x] = row and grid[x][y] = step
 
     where step is
