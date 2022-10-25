@@ -3,6 +3,8 @@
 
   A sample-based step-sequencer for in-brower use built using React and ToneJS. I built this in 2.5 weeks as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node/postgreSQL stack taught in the Prime curriculum. It is my first full-stack application, built in the third month of an accelerated full-stack software engineering progam.
 
+![Screen Shot 2022-10-24 at 6 12 03 PM](https://user-images.githubusercontent.com/104224468/197886282-3505e6fa-8e39-48ea-800b-7580a372f1f1.png)
+
 ## Using the Sequencer
 
   It's a basic tool. users first navigate to a new pattern page, (/pattern) where they can access the full functionality of the sequencer. if they want to save a pattern, they must login or register via the navbar. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
