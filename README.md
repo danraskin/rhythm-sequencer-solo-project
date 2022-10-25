@@ -14,7 +14,28 @@
 
 ## Deployment
 
+If deploying locally,
 
+  clone repo
+  ```bash
+  git clone git@github.com:danraskin/rhythm-sequencer-solo-project.git
+  npm install
+  ```
+
+  To make database
+  ```bash
+ ~$ createdb rhythm_sequencer
+ ~$ rhythm_sequencer < database.sql
+  ```
+  To start application
+  open two windows in terminal
+  ```bash
+  npm run server
+  npm run client
+  ```
+  Server runs on port: 5000
+
+  Client runs on port: 3000
 
 ## Design Concepts/Notes
 
