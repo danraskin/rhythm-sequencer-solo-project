@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom' //NEW FOR PATTERN/ID
+import { useParams } from 'react-router-dom'
 import axios from 'axios';
 
 import * as Tone from 'tone';
@@ -20,7 +20,6 @@ function Junk(
     
     const [ gridX, setGrid ] = useState([]);
     const [ drumKitX, setDrumKitX ] = useState([]);
-    // const [ beat, setBeat ] = useState (0);
 
     const [ selectedKitId, setKitId ] = useState(1);
     const [ bpm, BPMslider ] = useBPM(120);
