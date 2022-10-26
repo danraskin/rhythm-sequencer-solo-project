@@ -4,10 +4,10 @@ function BPMsetter(initialBPM) {
     const [bpm, setBPM] = useState(initialBPM);
 
     return [
-        bpm,
-        <input
+      bpm,
+      <input
         type="range"
-        min="10" max="350"
+        min="10" max="300"
         width="100px"
         value={bpm}
         onChange={e=>setBPM(e.target.value)}

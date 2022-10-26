@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import * as Tone from 'tone';
 
 import './StepSequencer.css';
-import StepTracker from "./StepTracker"
 
 function Guts({
         drumKit,
@@ -24,68 +23,61 @@ function Guts({
 
     const history = useHistory();
     const dispatch = useDispatch();
-    const user = useSelector(store => store.user);
+
+    const user = useSelector(store => store.user); // subscribes to store.user to save pattern data
     const beatRef = useRef(0);
-    const [ beat, setBeat ] = useState (beatRef.current);
+    const [ beat, setBeat ] = useState (beatRef.current); //not sure why i used both local state and useRef.
 
     useEffect(() => {
-        Tone.Transport.bpm.value = bpm;
-        console.log('armed',armed);
+        Tone.Transport.bpm.value = bpm; // resets Tone.Transport.BPM on every load event. allows live modification of bpm. 
+        // console.log('armed',armed);
         // console.log('drumKit', drumKit)
-
-        console.log('guts useEffect', grid[0][0])
-        
-        return () => {
-            // Tone.Transport.stop();
-
-            // beatRef.current=0;
-            console.log('guts useEffect stopping');
-        }
+        // console.log('guts useEffect', grid[0][0])
       }, [bpm])
 
     const triggerSample = () => {
+        //triggerSample is called on every 8th note, as tracked by Tone.Transport
         setBeat(beatRef.current); //sets beat for step tracker
-        grid.forEach(row => {
-            let note = row[beatRef.current];
-            const drum = grid.indexOf(row);
-            if (note.isActive === 1 ) {
+        grid.forEach(row => { 
+            let note = row[beatRef.current]; // finds step (grid column) by beat
+            const drum = grid.indexOf(row); // finds drum (grid row) by sample index in drumKit
+            if (note.isActive === 1 ) { // 1 = 'single trigger'
                 // console.log(drumKit[drum]);
-                drumKit[drum].start();
-            } else if (note.isActive === 2) {
+                drumKit[drum].start(); // triggers sample in drumKit
+            } else if (note.isActive === 2) { // 'double trigger'
                 // console.log(drumKit[drum]);
-                drumKit[drum].start();
-                drumKit[drum].start('+16n');
+                drumKit[drum].start();  //triggers sample first time
+                drumKit[drum].start('+16n'); //triggers sample second time one 16th note after first trigger
             };
             //   console.log(grid);
         });
-        beatRef.current = (beatRef.current + 1) % numSteps;
+        beatRef.current = (beatRef.current + 1) % numSteps; // sets beatRef
         // console.log('beat',beatRef.current);
     };
 
     const toggleSequencePlayback = async (e) => {
-        let repeater; //unique event ID;
         if (!armed) { //ARMED toggle prevents multiple instances of Tone.start()
-            setArmed(true);  
-            await Tone.start();
+            setArmed(true);
+            await Tone.start(); // creates playback context (I think? nothing can play )
           }
       
-          if (playing) { //if clock is already running
+        if (playing) { //if clock is already running
             e.target.innerText = "Play";
-            Tone.Transport.cancel(repeater);//cancles repeated triggerSample() event;
-            Tone.Transport.stop(); //stops clock
+            Tone.Transport.cancel(); // cancels repeated triggerSample() event;
+            Tone.Transport.stop(); // stops clock
             setPlaying(false); 
-          } else {
+        } else {
             e.target.innerText = "Stop";
             beatRef.current=0; // resets beat
-            setBeat(beatRef.current);
-            repeater = Tone.Transport.scheduleRepeat(triggerSample, "8n"); //schedules repeated triggerSample() event;
-            // console.log('in toggleSequencePayer',repeater)
+            setBeat(beatRef.current); // resets beat
+            Tone.Transport.scheduleRepeat(triggerSample, "8n"); // schedules repeated triggerSample() event; scheduleRepeat returns unique event ID, which is used to cancel event on click STOP *and* Junk.jsx re-load
             Tone.Transport.start(); //starts clock
             setPlaying(true);
-          }
+        }
       };
 
     const stepToggle = (e,step) => {
+        //logic gate to handle step status.
         const shiftOn = e.shiftKey;       
         if (shiftOn) {
             if (step.isActive != 2 ) {
@@ -106,17 +98,16 @@ function Guts({
 
     const makePatternObject = () => {
         const pattern = {};
-        const drumNames = ['BD','SD','HH'];
+        const drumNames = ['BD','SD','HH']; // "steps" and "samples" database stores data by BD, SD, HH columns.
 
         for ( let row of grid ) {
-            const setRow = []
+            const setRow = [] // creates pattern grid
             for ( let step in row ) {
                 setRow.push(row[step].isActive)
             }
-            // for each 
-            pattern[drumNames[grid.indexOf(row)]] = setRow;
+            pattern[drumNames[grid.indexOf(row)]] = setRow; // sets pattern grid to as value of pattern.pattern. see readMe for data structure.
         }
-        console.log('in makePatternObject', patternId);
+        // console.log('in makePatternObject', patternId);
 
         const patternData = {
             name: patternName,
@@ -166,19 +157,25 @@ function Guts({
                 ))}
                 <div className="row row_track">
                     { Object.entries(grid).length === 0 ? null : grid[0].map(step => (
-                        beatRef.current === step.step ?
-                            <StepTracker
+                        beat === step.step ?
+                            <div
                                 key={step.step}
-                                step={step}
-                                isActive={true}
-                                beatRef={beat}
-                            /> :
-                            <StepTracker
+                                className={`
+                                    step
+                                    step_track
+                                    step_track_${step.step}
+                                    track_active-true`
+                                }
+                            ></div> :
+                            <div
                                 key={step.step}
-                                step={step}
-                                isActive={false}
-                                beatRef={beat}
-                            />
+                                className={`
+                                    step
+                                    step_track
+                                    step_track_${step.step}
+                                    track_active-false`
+                                }
+                            ></div>
                     ))}
                 </div>
             </section>
