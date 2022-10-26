@@ -5,14 +5,35 @@
 
 ## Using the Sequencer
 
-  It's a basic tool. users first navigate to a new pattern page, (/pattern) where they can access the full functionality of the sequencer. if they want to save a pattern, they must login or register via the navbar. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
+  It's a basic tool. users can access the full functionality of the drum machine on new pattern page. if they want to save a pattern, they must login or register via the navbar. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
 
   * SHIFT + CLICK to set step status to 'double trigger'
   * things might get freaky when users navigate to a new or saved pattern without *stopping* the clock/sequencer. if this happens, stop -> start or refresh.
 
 ## Deployment
 
+  If deploying locally,
 
+  clone repo
+  ```bash
+  git clone git@github.com:danraskin/rhythm-sequencer-solo-project.git
+  npm install
+  ```
+
+  To make database
+  ```bash
+ ~$ createdb rhythm_sequencer
+ ~$ rhythm_sequencer < database.sql
+  ```
+  To start application
+  open two windows in terminal
+  ```bash
+  npm run server
+  npm run client
+  ```
+  Server runs on port: 5000
+
+  Client runs on port: 3000
 
 ## Design Concepts/Notes
 
@@ -26,8 +47,8 @@
     5. visual representation of step position.
     6. minimal interface.
 
-  - setting a double trigger is only unique function of this machine, and considerably improves its playability.
-  - kits used for testing/demo: three samples per kit is minimum for dynamic rhythms. 808 kits are carelessly assembled from a Roland TR-808 sample pack.'conrete 1' and 'concrete 2' more carefully assembled from my personal library of recordigs and improvisations..
+- setting a double trigger is only unique function of this machine, and considerably improves its playability.
+- kits used for testing/demo: three samples per kit is minimum for dynamic rhythms. 808 kits are carelessly assembled from a Roland TR-808 sample pack.'conrete 1' and 'concrete 2' more carefully assembled from my personal library of recordigs and improvisations..
 
 * Visual Design
 
@@ -63,25 +84,41 @@
 
   - 'grid' array is primary data structure used by app. 
 
-      [ 
-      [ {...}, {...}, {...}, {...} ],
-      [ {...}, {...}, {...}, {...} ],
-      [ {...}, {...}, {...}, {...} ]
-      ]
-    where grid[x] = row and grid[x][y] = step
+      ``` [ 
 
-    where step is
-    {
-      isActive: [0/1/2],
-      step: [y]
-    }
+        [ {...}, {...}, {...}, {...} ],
+
+        [ {...}, {...}, {...}, {...} ],
+
+        [ {...}, {...}, {...}, {...} ]
+
+      ] ```
+
+  where grid[x] = row
+  
+  and grid[x][y] = step
+
+  where step is
+
+     ```{
+
+        isActive: [0/1/2],
+
+        step: [y]
+
+      }```
 
   - 'drumKit' array is and array of ToneJS players
-    [
-      Tone.Player(BD),
-      Tone.Player(SD),
-      Tone.Player(HH)
-    ]
+      
+      ```[
+
+        Tone.Player(BD),
+
+        Tone.Player(SD),
+
+        Tone.Player(HH)
+
+      ]```
 
   - grid and drumKit are created in 'Junk.jsx' on DOM load and passed to 'Guts.jsx' as prop.
 
@@ -114,5 +151,3 @@
   HTML/CSS/JS; React/Redux/Saga; Axios; NodeJS/Express/PostgreSQL; ToneJS; Passport...
 
   For full dependencies list see package.JSON
-
-## Acknowledgements
