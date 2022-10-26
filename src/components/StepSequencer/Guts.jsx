@@ -19,8 +19,6 @@ function Guts({
         armed,
         setArmed,
         patternId,
-        repeater,
-        setRepeater
     }) {
 
     const history = useHistory();
@@ -54,7 +52,7 @@ function Guts({
             //   console.log(grid);
         });
         beatRef.current = (beatRef.current + 1) % numSteps; // sets beatRef
-        console.log('beat',beatRef.current);
+        // console.log('beat',beatRef.current);
     };
 
     const toggleSequencePlayback = async (e) => {
@@ -65,15 +63,14 @@ function Guts({
       
           if (playing) { //if clock is already running
             e.target.innerText = "Play";
-            Tone.Transport.cancel(repeater); // cancles repeated triggerSample() event;
+            Tone.Transport.cancel(); // cancels repeated triggerSample() event;
             Tone.Transport.stop(); // stops clock
             setPlaying(false); 
           } else {
             e.target.innerText = "Stop";
             beatRef.current=0; // resets beat
             setBeat(beatRef.current); // resets beat
-            setRepeater(Tone.Transport.scheduleRepeat(triggerSample, "8n")); // schedules repeated triggerSample() event; scheduleRepeat returns unique event ID, which is used to cancel event on click STOP *and* Junk.jsx re-load
-            // console.log('in toggleSequencePayer',repeater)
+            Tone.Transport.scheduleRepeat(triggerSample, "8n"); // schedules repeated triggerSample() event; scheduleRepeat returns unique event ID, which is used to cancel event on click STOP *and* Junk.jsx re-load
             Tone.Transport.start(); //starts clock
             setPlaying(true);
           }

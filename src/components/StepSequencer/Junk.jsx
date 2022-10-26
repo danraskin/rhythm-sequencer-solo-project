@@ -24,13 +24,12 @@ function Junk() {
     const [ patternName, setPatternName ] = useState('new pattern');
     const [ playing, setPlaying ] = useState(false);
     const [ armed, setArmed ] = useState(false);
-    const [ repeater, setRepeater ] = useState();
 
     useEffect( () => {
         buildGrid(patternId); //builds grid on page load.
         return () => {
             Tone.Transport.stop(); // if user navigates to new page (saved sample or new pattern), stops transport.
-            Tone.Transport.cancel(repeater);
+            Tone.Transport.cancel();
         }
     },[patternId,samples,numSteps]);
 
@@ -189,8 +188,6 @@ function Junk() {
                     playing={playing}
                     setPlaying={setPlaying}
                     patternId={patternId}
-                    repeater={repeater}
-                    setRepeater={setRepeater}
                 />
             }
         </div>
