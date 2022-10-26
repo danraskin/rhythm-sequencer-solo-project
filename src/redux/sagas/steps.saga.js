@@ -19,47 +19,39 @@ function* editSteps(action) {
 }
 
 function* fetchPatternSteps(action) {
+    
+    const patternId = action.payload;
 
-    const patternId = action.payload.patternId;
-    const samples = action.payload.samples;
+    // const patternId = action.payload.patternId;
+    // const samples = action.payload.samples;
 
     try {
         const response = yield axios.get(`api/steps/${patternId}`);
 
-        console.log('in fetchPatternSteps: ', patternId, samples, response.data);
+        console.log('in fetchPatternSteps: ', patternId, response.data);
 
         yield put({
             type: 'SET_PATTERN_STEPS',
-            payload: response.data.grid
+            payload: response.data
         }); 
 
-        yield put({
-            type: 'SET_SELECTED_KIT', //SEND TO REDUCER
-            // type: 'SELECT_KIT', // SEND TO SAGA
-            payload: {
-                kit_id: response.data.kit_id,
-                name: response.data.name,
-                samples
-            }});
+        // yield put({
+        //     type: 'SET_SELECTED_KIT', //SEND TO REDUCER
+        //     // type: 'SELECT_KIT', // SEND TO SAGA
+        //     payload: {
+        //         kit_id: response.data.kit_id,
+        //         name: response.data.name,
+        //         samples
+        //     }});
 
     } catch (error) {
         console.log('error in fetchPatternSteps: ', error);
     }
 }
 
-function* transformSteps(action) {
-
-
-
-}
-
-
-
-
 function* stepsSaga() {
     yield takeLatest('EDIT_STEPS', editSteps);
     yield takeLatest('FETCH_PATTERN_STEPS', fetchPatternSteps);
-    yield takeLatest('TRANSFORM_STEPS', transformSteps)
   }
 
   export default stepsSaga;

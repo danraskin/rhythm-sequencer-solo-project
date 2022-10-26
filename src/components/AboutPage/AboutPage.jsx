@@ -23,7 +23,7 @@ function AboutPage() {
         <hr/>
         <ul>
           <li>Introduce sample parameter controls (volume, pitch)</li>
-          <li>Integrate a generative synth player (Cracked web audio library!!)</li>
+          <li>Integrate a generative synth player (<h href="https://github.com/billorcutt/i_dropped_my_phone_the_screen_cracked" >Cracked web audio library!!</h>)</li>
           <li>Allow creation of multi-bar patterns</li>
           <li>Support sample uploads and customizable kit libraries</li>
         </ul>
@@ -32,6 +32,11 @@ function AboutPage() {
           <h3>Thanks</h3>
           <hr/>
           <p>Gratitude to my collaborators in <b>Prime Academy L'Engle cohort</b>, our instructor <b>Matt Black</b>, <b>Jaxon Vesely</b> who supplied me with a *MASSIVE* sample kit years ago, and developer <b>Garret Bodley</b>, whose <a href="https://medium.com/geekculture/creating-a-step-sequencer-with-tone-js-32ea3002aaf5">step sequencer tutorial</a> architecture I used as the backbone for my own.</p>
+        </div>
+        <div className="abt_contact">
+          <h3>contact</h3>
+          <hr/>
+          <p><h href="https://github.com/danraskin">github.com/danraskin</h>, <h href="https://www.linkedin.com/in/danieltraskin/">linkedin.com/in/danieltraskin</h></p>
         </div>
     </div>
   );
