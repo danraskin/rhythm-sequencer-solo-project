@@ -121,8 +121,7 @@ If deploying locally:
 
   - `Tone.start()` is called the first time user clicks `play`. It can only be called *once* per Junk.jsx load, otherwise Tone playback breaks. Logic gated by state of `armed`. `armed` state is accessed in `Junk` and passed to `Guts`, so `Guts` re-renders do not reset `armed` to FALSE. 
   - `Tone.Transport.start()`, `Tone.Transport.stop()` start and stop the Tone clock. BPM is inherited via `Junk`, and can be modified while clock is running.
-  - `Tone.Transport.scheduleRepeat(triggerSample(),"8n")` schedules a repeating event. triggerSample() is called every 8th note along while Tone clock is running.
-  - `repeater` is the unique event ID variable returned by `scheduleRepeat()` (see ToneJS documentation).
+  - `Tone.Transport.scheduleRepeat(triggerSample(),"8n")` schedules a repeating event. triggerSample() is called every 8th note along while Tone clock is running. `scheduleRepeat()` returns a unique event ID (see ToneJS documentation).
   - `Tone.Transport.cancel(repeater)` cancels target event. Without cancelling, multiple `scheduleRepeat` events stack on top of each other, triggering multiple patterns to play at once. it gets ugly!
 
 ## ~Technologies~
