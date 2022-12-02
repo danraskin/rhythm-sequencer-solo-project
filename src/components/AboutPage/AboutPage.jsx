@@ -19,6 +19,11 @@ function AboutPage() {
         </ul>
       </div>
       <div className="abt_next">
+        <h3>HINT!</h3>
+          <hr/>
+          <ul>
+            <li>Shift+click on step for double-trigger!!</li>
+          </ul>
         <h3>Next steps</h3>
         <hr/>
         <ul>
