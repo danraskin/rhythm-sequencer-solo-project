@@ -46,7 +46,7 @@ If deploying locally:
   `drumKit` is an array of playable audio sample
   `pattern` refers to the current grid and drumKit objects
 
-### ~ARCHITECTURE~
+### ARCHITECTURE
 
   The main app components live in /src/StepSequencer. There are two primary components: `Junk` and `Guts`. Data objects are `grid` array and `drumKit` array (see below)
 
@@ -63,7 +63,7 @@ If deploying locally:
   * triggers `drumKit` sample playback
   * saves pattern data to saga functions.
 
-### ~DATA STRUCTURES~
+### DATA STRUCTURES
 
   `grid` array models a pattern.
 
@@ -101,19 +101,19 @@ If deploying locally:
   
   New `grid` defaults to 8-step sequence and new `drumKit` defaults to TR808-1 sample kit.
 
-### ~REACT HOOKS~
+### REACT HOOKS
 
   Originally, I attempted to route all axios requests through Redux-Sagas and to store all data used by components in Redux reducers. This created problems related to component rendering, so I refactored the app to rely on mostly on React useState hook. Most pieces of state are set and accessed in `Junk` and passed to `Guts`.
 
   `armed` and `playing` are boolean values used to gate toggleSequencePlayback() in `Guts`.
 
-### ~REDUX/SAGAS~
+### REDUX/SAGAS
 
   User, sample, and saved pattern data are retrieved from database by Axios requests in saga functions; Saved pattern data is retrieved by Axios request in `Junk`
 
   useEffect in `App` component dispatches GET requests for current user data and sample data via Saga functions.
 
-### ~TONEJS~
+### TONEJS
 
   Tone.Players are created by buildDrumKit() in `Junk` and saved to `drumKit`. I don't quite understand what distinguishes Buffers and Players, but together, they create a playable object that can trigger .WAV playbacks. It is possible that buffers do not actually need to be defined.
 
@@ -124,13 +124,13 @@ If deploying locally:
   - `Tone.Transport.scheduleRepeat(triggerSample(),"8n")` schedules a repeating event. triggerSample() is called every 8th note along while Tone clock is running. `scheduleRepeat()` returns a unique event ID (see ToneJS documentation).
   - `Tone.Transport.cancel(repeater)` cancels target event. Without cancelling, multiple `scheduleRepeat` events stack on top of each other, triggering multiple patterns to play at once. it gets ugly!
 
-## ~Technologies~
+## Technologies
 
   HTML/CSS/JS; React/Redux/Saga; Axios; NodeJS/Express/PostgreSQL; ToneJS; Passport...
 
   For full dependencies list see package.JSON
 
-## ~Acknowledgements~
+## Acknowledgements
 
 The grid and playback structures are modified direclty from Garret Bodley. Their ![step sequencer tutorial](https://medium.com/geekculture/creating-a-step-sequencer-with-tone-js-32ea3002aaf5) was enormously helpful.
 
