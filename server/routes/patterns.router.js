@@ -4,7 +4,7 @@ const router = express.Router();
 
 //POST new pattern
 router.post('/', async (req, res) => {
-    console.log('in POST /patterns', req.body);
+    // console.log('in POST /patterns', req.body);
     const name = req.body.name;
     const kit_id = req.body.kit_id;
     const user_id=req.body.user;
