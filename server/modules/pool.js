@@ -19,12 +19,13 @@ if (process.env.DATABASE_URL) {
   };
 }
 
-pool.on('connect',(client)=> {
-  client.query(`SET search_path TO ${config.schema}, public`);
-});
 
 // this creates the pool that will be shared by all other modules
 const pool = new pg.Pool(config);
+
+pool.on('connect',(client)=> {
+  client.query(`SET search_path TO ${config.schema}, public`);
+});
 
 // the pool with emit an error on behalf of any idle clients
 // it contains if a backend error or network partition happens
