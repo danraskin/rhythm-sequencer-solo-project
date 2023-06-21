@@ -10,7 +10,7 @@ function Nav() {
   return (
     <div className="nav">
       <Link to="/pattern">
-        <h2 className="nav-title"><img className ="icon" src="https://tombubul.com/2019_mayo.jpg"></img></h2>
+        <h2 className="nav-title"><img className ="icon" src="../../../IMG_6233.jpg"></img></h2>
       </Link>
       <div>
         {/* If no user is logged in, show these links */}
