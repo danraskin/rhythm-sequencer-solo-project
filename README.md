@@ -1,15 +1,13 @@
 
 # React/ToneJS Drum Machine
 
-  A full-stack, sample-based step sequencer built using React and ToneJS. I built this in 2.5 weeks as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node-postgreSQL stack taught in the Prime curriculum.
+A full-stack, sample-based step sequencer built using React and ToneJS. I built this in a 2-week spring as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node-postgreSQL stack taught in the Prime curriculum.
 
-[CHECK IT OUT!](https://rhythm-sequencer-solo-project.herokuapp.com/)
-![Screen Shot 2022-10-24 at 6 12 03 PM](https://user-images.githubusercontent.com/104224468/198123553-c204f338-b642-4a2e-8108-3dd93dbfae9a.png)
-
+<img src="https://user-images.githubusercontent.com/104224468/198123553-c204f338-b642-4a2e-8108-3dd93dbfae9a.png" width=400 />
 
 ## Using the Sequencer
 
-  Any user can access the full functionality of the sequencer. To save a pattern, they must login or register. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
+Any user can access the full functionality of the sequencer. To save a pattern, they must login or register an account. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
 
   * SHIFT + CLICK to set step status to 'double trigger'
   * things might get freaky when users navigate to a new or saved pattern without *stopping* the clock/sequencer. if this happens, stop -> start or refresh.
