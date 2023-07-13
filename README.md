@@ -1,7 +1,6 @@
-
 # React/ToneJS Drum Machine
 
-A full-stack, sample-based step sequencer built using React and ToneJS. I built this in a 2-week spring as a solo project for Prime Digital Academy, an accelerated full-stack software engineering program. The sequencer integrates ToneJS into the react-redux-saga/node-postgreSQL stack taught in the Prime curriculum. 
+A full-stack, sample-based step sequencer built using React and ToneJS. I built this in a 2-week spring. The sequencer integrates Tone.js web audio library into a react/redux/saga, node.js/postgresql stack. 
 
 - Uses Tone.js web audio library to trigger samples.
 - Registered users can save, access and edit stored beat sequences.
@@ -13,7 +12,7 @@ A full-stack, sample-based step sequencer built using React and ToneJS. I built 
 
 ## Using the Sequencer
 
-Check it out [here](https://rhythm-sequencer-solo-project.herokuapp.com)!
+- Check it out [here](https://rhythm-sequencer-solo-project.herokuapp.com)!
 
 Any user can access the full functionality of the sequencer. To save a pattern, they must login or register an account. Once logged in, users can save, access, edit or delete patterns. Database stores sequence length, step status, pattern name, and most recently selected drumKit. BPM is automatically reset to 120 when navigating to either a new or saved pattern from any page.
 
